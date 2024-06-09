@@ -1,4 +1,26 @@
+import java.util.HashMap;
+
 public class Main {
+
+    public static void printTestData(
+        HashMap<Integer, Task> tasks,
+        HashMap<Integer, SubTask> subTasks,
+        HashMap<Integer, Epic> epics
+    ){
+        System.out.println("Задачи:");
+        for (Task task : tasks.values()) {
+            System.out.println(task);
+        }
+        System.out.println("Подзадачи:");
+        for (SubTask subTask : subTasks.values()) {
+            System.out.println(subTask);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : epics.values()) {
+            System.out.println(epic);
+        }
+        System.out.println();
+    }
 
     public static void main(String[] args) {
 
@@ -41,18 +63,65 @@ public class Main {
         epic2.subTaskIds.add(subTask6.id);
         taskManager.addTask(epic2);
 
-        for (Task task : taskManager.tasks.values()) {
-            System.out.println(task);
-        }
+        HashMap<Integer, Task> tasks = taskManager.getTasks();
+        HashMap<Integer, SubTask> subTasks = taskManager.getSubTasks();
+        HashMap<Integer, Epic> epics = taskManager.getEpics();
+        printTestData(tasks, subTasks, epics);
 
-        for (SubTask subTask : taskManager.subTasks.values()) {
+        System.out.println("Меняем статус задачи");
+        task1.status = Status.IN_PROGRESS;
+        taskManager.updateTask(task1);
+
+        System.out.println("Меняем статус подзадачи");
+        subTask1.status = Status.IN_PROGRESS;
+        taskManager.updateTask(subTask1);
+
+        printTestData(tasks, subTasks, epics);
+
+        System.out.println("Меняем описание эпика");
+        epic1.description = "Еженедельная уборка квартиры";
+        taskManager.updateTask(epic1);
+
+        printTestData(tasks, subTasks, epics);
+
+        System.out.println("Получить подзадачи эпика с id " + epic1.id + ", " + epic1.title);
+        HashMap<Integer, SubTask> subTasksByEpic = taskManager.getSubTasksByEpic(epic1.id);
+        for (SubTask subTask : subTasksByEpic.values()) {
             System.out.println(subTask);
         }
+        System.out.println();
 
-        for (Epic epic : taskManager.epics.values()) {
-            System.out.println(epic);
+        System.out.println("Удаляем задачу с id " + task2.id);
+        taskManager.deleteTask(task2.id);
+        System.out.println("Удаляем подзадачу с id " + subTask2.id);
+        taskManager.deleteTask(subTask2.id);
+        System.out.println("Удаляем эпик с id " + epic2.id);
+        taskManager.deleteTask(epic2.id);
+
+        printTestData(tasks, subTasks, epics);
+
+        System.out.println("Меняем статус всех подзадач");
+        for (SubTask subTask : taskManager.subTasks.values()) {
+            subTask.status = Status.DONE;
+            taskManager.updateTask(subTask);
         }
-        System.out.println(taskManager.epics);
+        printTestData(tasks, subTasks, epics);
 
+        System.out.println("Получить задачу по id " + task3.id);
+        System.out.println(taskManager.getTask(task3.id));
+        System.out.println("Получить подзадачу по id " + subTask3.id);
+        System.out.println(taskManager.getSubTask(subTask3.id));
+        System.out.println("Получить эпик по id " + epic1.id);
+        System.out.println(taskManager.getEpic(epic1.id));
+        System.out.println();
+
+        System.out.println("Удаляем все задачи");
+        taskManager.deleteAllTasks();
+        System.out.println("Удаляем все подзадачи");
+        taskManager.deleteAllSubTasks();
+        System.out.println("Удаляем все эпики");
+        taskManager.deleteAllEpics();
+
+        printTestData(tasks, subTasks, epics);
     }
 }

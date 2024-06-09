@@ -35,7 +35,9 @@ public class TaskManager {
 
     public void updateTask(SubTask subTask) {
         subTasks.put(subTask.id, subTask);
-        syncEpic(epics.get(subTask.epicId));
+        if (subTask.epicId != 0) {
+            syncEpic(epics.get(subTask.epicId));
+        }
     }
 
     public void updateTask(Epic epic) {
@@ -49,6 +51,7 @@ public class TaskManager {
         } else if (subTasks.containsKey(id)) {
            int epicId = subTasks.get(id).epicId;
            Epic epic = epics.get(epicId);
+           epic.subTaskIds.remove((Integer) id);
            subTasks.remove(id);
            syncEpic(epic);
         } else if (epics.containsKey(id)) {
@@ -83,7 +86,7 @@ public class TaskManager {
         return subTasks;
     }
 
-    public HashMap<Integer, Epic> getEpic() {
+    public HashMap<Integer, Epic> getEpics() {
         return epics;
     }
 
@@ -104,7 +107,6 @@ public class TaskManager {
             return null;
         }
     }
-
 
     public void deleteAllTasks(){
         if (tasks.isEmpty()) {
