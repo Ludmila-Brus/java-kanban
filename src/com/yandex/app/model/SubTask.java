@@ -1,7 +1,5 @@
 package com.yandex.app.model;
 
-import com.yandex.app.service.Status;
-
 public class SubTask extends Task {
     private int epicId;
 
@@ -24,12 +22,12 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "com.yandex.app.model.SubTask{" +
-                "epicId=" + this.getEpicId() +
-                ", id=" + this.getId() +
+        return "model.SubTask{" +
+                "id=" + this.getId() +
                 ", title='" + this.getTitle() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus() +
+                ", epicId=" + this.getEpicId() +
                 '}';
     }
 }

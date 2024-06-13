@@ -1,13 +1,24 @@
 package com.yandex.app.model;
 
-import com.yandex.app.service.Status;
-
 public class Task {
 
     private int id;
     private String title;
     private String description;
     private Status status;
+
+    public Task(String title, String description) {
+        this.title = title;
+        this.description = description;
+        this.status = Status.NEW;
+    }
+
+    public Task(int id, String title, String description, Status status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+    }
 
     public Status getStatus() {
         return status;
@@ -21,6 +32,7 @@ public class Task {
         return id;
     }
 
+    // используется в TaskManager.addTask
     public void setId(int id) {
         this.id = id;
     }
@@ -43,24 +55,11 @@ public class Task {
 
     @Override
     public String toString() {
-        return "com.yandex.app.model.Task{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
+        return "model.Task{" +
+                "id=" + this.getId() +
+                ", title='" + this.getTitle() + '\'' +
+                ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus() +
                 '}';
-    }
-
-    public Task(String title, String description) {
-        this.title = title;
-        this.description = description;
-        this.status = Status.NEW;
-    }
-
-    public Task(int id, String title, String description, Status status) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.status = status;
     }
 }

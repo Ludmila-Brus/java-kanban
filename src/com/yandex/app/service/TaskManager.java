@@ -1,37 +1,42 @@
 package com.yandex.app.service;
 
 import com.yandex.app.model.Epic;
+import com.yandex.app.model.Status;
 import com.yandex.app.model.SubTask;
 import com.yandex.app.model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+// реализация согласована
 public class TaskManager {
 
     private int nextId = 1;
 
-    private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HashMap<Integer, Epic> epics = new HashMap<>();
-    private HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final HashMap<Integer, Epic> epics = new HashMap<>();
+    private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
-    public void addTask(Task task) {
+    public int addTask(Task task) {
         task.setId(nextId);
         nextId++;
         tasks.put(task.getId(), task);
+        return task.getId();
     }
 
-    public void addTask(SubTask subTask) {
+    public int addTask(SubTask subTask) {
         subTask.setId(nextId);
         nextId++;
         subTasks.put(subTask.getId(), subTask);
+        return subTask.getId();
     }
     
-    public void addTask(Epic epic) {
+    public int addTask(Epic epic) {
         epic.setId(nextId);
         nextId++;
         epics.put(epic.getId(), epic);
         syncEpic(epic);
+        return epic.getId();
     }
 
     public void updateTask(Task task) {
@@ -56,6 +61,8 @@ public class TaskManager {
         } else if (subTasks.containsKey(id)) {
            int epicId = subTasks.get(id).getEpicId();
            Epic epic = epics.get(epicId);
+           // удаление подзадачи не по индексу, а по объекту
+           // поэтому используем обертку (Integer)
            epic.getSubTaskIds().remove((Integer) id);
            subTasks.remove(id);
            syncEpic(epic);
@@ -82,6 +89,7 @@ public class TaskManager {
         return epics.get(id);
     }
 
+    // получить список копий задач
     public ArrayList<Task> getCopyOfTasks() {
         ArrayList<Task> copyOfTasks = new ArrayList<>();
         for (Task task : tasks.values()) {
@@ -91,6 +99,12 @@ public class TaskManager {
         return copyOfTasks;
     }
 
+    // получить список задач
+    public ArrayList<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
+    }
+
+    // получить список копий подзадач
     public ArrayList<SubTask> getCopyOfSubTasks() {
         ArrayList<SubTask> copyOfSubTasks = new ArrayList<>();
         for (SubTask subTask : subTasks.values()) {
@@ -100,6 +114,12 @@ public class TaskManager {
         return copyOfSubTasks;
     }
 
+    // получить список подзадач
+    public ArrayList<SubTask> getSubTasks() {
+        return new ArrayList<>(subTasks.values());
+    }
+
+    // получить список копий эпиков
     public ArrayList<Epic> getCopyOfEpics() {
         ArrayList<Epic> copyOfEpics = new ArrayList<>();
         for (Epic epic : epics.values()) {
@@ -112,7 +132,14 @@ public class TaskManager {
         return copyOfEpics;
     }
 
+    // получить список эпиков
+    public ArrayList<Epic> getEpics() {
+        return new ArrayList<>(epics.values());
+    }
+
     public ArrayList<SubTask> getSubTasksByEpic(int epicId) {
+        // без проверки epics.containsKey(epicId)
+        // придется проверять на epic null, чтобы не было ошибки при epic.getSubTaskIds()
         if (epics.containsKey(epicId)) {
             Epic epic = epics.get(epicId);
             if (!epic.getSubTaskIds().isEmpty()) {
@@ -157,11 +184,7 @@ public class TaskManager {
         if (epics.isEmpty()) {
             System.out.println("Список епиков пуст");
         } else {
-            for (Epic epic : epics.values()) {
-                for (Integer subTaskId : epic.getSubTaskIds()) {
-                    subTasks.remove(subTaskId);
-                }
-            }
+            subTasks.clear();
             epics.clear();
         }
     }

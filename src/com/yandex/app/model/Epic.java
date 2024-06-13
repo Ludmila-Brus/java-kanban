@@ -1,7 +1,5 @@
 package com.yandex.app.model;
 
-import com.yandex.app.service.Status;
-
 import java.util.ArrayList;
 
 public class Epic extends Task {
@@ -27,12 +25,12 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "com.yandex.app.model.Epic{" +
-                "subTaskIds=" + this.getSubTaskIds() +
-                ", id=" + this.getId() +
+        return "model.Epic{" +
+                "id=" + this.getId() +
                 ", title='" + this.getTitle() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus() +
+                ", subTaskIds=" + this.getSubTaskIds() +
                 '}';
     }
 }

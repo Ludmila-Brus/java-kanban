@@ -3,7 +3,7 @@ package com.yandex.app;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.SubTask;
 import com.yandex.app.model.Task;
-import com.yandex.app.service.Status;
+import com.yandex.app.model.Status;
 import com.yandex.app.service.TaskManager;
 
 import java.util.ArrayList;
@@ -53,6 +53,26 @@ public class Main {
         printTestData(tasks, subTasks, epics);
     }
 
+    public static void printTestDataByList(
+        ArrayList<Task> tasks,
+        ArrayList<SubTask> subTasks,
+        ArrayList<Epic> epics
+    ){
+        System.out.println("Задачи:");
+        for (Task task : tasks) {
+            System.out.println(task);
+        }
+        System.out.println("Подзадачи:");
+        for (SubTask subTask : subTasks) {
+            System.out.println(subTask);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : epics) {
+            System.out.println(epic);
+        }
+        System.out.println();
+    }
+
     public static void main(String[] args) {
 
         System.out.println("Поехали!");
@@ -94,37 +114,37 @@ public class Main {
         epic2.getSubTaskIds().add(subTask6.getId());
         taskManager.addTask(epic2);
 
-        ArrayList<Task> copyOfTasks = taskManager.getCopyOfTasks();
-        ArrayList<SubTask> copyOfSubTasks = taskManager.getCopyOfSubTasks();
-        ArrayList<Epic> copyOfEpics = taskManager.getCopyOfEpics();
-        printTestDataByCopy(copyOfTasks, copyOfSubTasks, copyOfEpics);
+        ArrayList<Task> lnkTasks = taskManager.getTasks();
+        ArrayList<SubTask> lnkSubTasks = taskManager.getSubTasks();
+        ArrayList<Epic> lnkEpics = taskManager.getEpics();
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
 
         System.out.println("Меняем статус задачи");
         task1.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(task1);
-
         System.out.println("Меняем статус подзадачи");
         subTask1.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(subTask1);
-
-        copyOfTasks = taskManager.getCopyOfTasks();
-        copyOfSubTasks = taskManager.getCopyOfSubTasks();
-        copyOfEpics = taskManager.getCopyOfEpics();
-        printTestDataByCopy(copyOfTasks, copyOfSubTasks, copyOfEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
 
         System.out.println("Меняем описание эпика");
         epic1.setDescription("Еженедельная уборка квартиры");
         taskManager.updateTask(epic1);
-
-        copyOfTasks = taskManager.getCopyOfTasks();
-        copyOfSubTasks = taskManager.getCopyOfSubTasks();
-        copyOfEpics = taskManager.getCopyOfEpics();
-        printTestDataByCopy(copyOfTasks, copyOfSubTasks, copyOfEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
 
         System.out.println("Получить подзадачи эпика с id " + epic1.getId() + ", " + epic1.getTitle());
         ArrayList<SubTask> subTasksByEpic = taskManager.getSubTasksByEpic(epic1.getId());
         for (SubTask subTask : subTasksByEpic) {
             System.out.println(subTask);
+        }
+        System.out.println();
+
+        System.out.println("Получить подзадачи эпика с несуществующим id = - 1");
+        subTasksByEpic = taskManager.getSubTasksByEpic(-1);
+        if (subTasksByEpic != null) {
+            for (SubTask subTask : subTasksByEpic) {
+                System.out.println(subTask);
+            }
         }
         System.out.println();
 
@@ -135,10 +155,10 @@ public class Main {
         System.out.println("Удаляем эпик с id " + epic2.getId());
         taskManager.deleteTask(epic2.getId());
 
-        copyOfTasks = taskManager.getCopyOfTasks();
-        copyOfSubTasks = taskManager.getCopyOfSubTasks();
-        copyOfEpics = taskManager.getCopyOfEpics();
-        printTestDataByCopy(copyOfTasks, copyOfSubTasks, copyOfEpics);
+        lnkTasks = taskManager.getTasks();
+        lnkSubTasks = taskManager.getSubTasks();
+        lnkEpics = taskManager.getEpics();
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
 
         System.out.println("Меняем статус всех подзадач");
         for (SubTask copyOfSubTask : taskManager.getCopyOfSubTasks()) {
@@ -146,10 +166,7 @@ public class Main {
             subTask.setStatus(Status.DONE);
             taskManager.updateTask(subTask);
         }
-        copyOfTasks = taskManager.getCopyOfTasks();
-        copyOfSubTasks = taskManager.getCopyOfSubTasks();
-        copyOfEpics = taskManager.getCopyOfEpics();
-        printTestDataByCopy(copyOfTasks, copyOfSubTasks, copyOfEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
 
         System.out.println("Получить задачу по id " + task3.getId());
         System.out.println(taskManager.getTask(task3.getId()));
@@ -164,10 +181,10 @@ public class Main {
         System.out.println("Удаляем все подзадачи");
         taskManager.deleteAllSubTasks();
 
-        copyOfTasks = taskManager.getCopyOfTasks();
-        copyOfSubTasks = taskManager.getCopyOfSubTasks();
-        copyOfEpics = taskManager.getCopyOfEpics();
-        printTestDataByCopy(copyOfTasks, copyOfSubTasks, copyOfEpics);
+        lnkTasks = taskManager.getTasks();
+        lnkSubTasks = taskManager.getSubTasks();
+        lnkEpics = taskManager.getEpics();
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
 
         SubTask subTask7 = new SubTask("Помыть посуду","Помыть тарелки и чашки");
         SubTask subTask8 = new SubTask("Полить цветы", "Полить цветы во всех комнатах");
@@ -195,18 +212,18 @@ public class Main {
         epic4.getSubTaskIds().add(subTask12.getId());
         taskManager.addTask(epic4);
 
-        copyOfTasks = taskManager.getCopyOfTasks();
-        copyOfSubTasks = taskManager.getCopyOfSubTasks();
-        copyOfEpics = taskManager.getCopyOfEpics();
-        printTestDataByCopy(copyOfTasks, copyOfSubTasks, copyOfEpics);
+        lnkTasks = taskManager.getTasks();
+        lnkSubTasks = taskManager.getSubTasks();
+        lnkEpics = taskManager.getEpics();
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
 
         System.out.println("Удаляем все эпики");
         taskManager.deleteAllEpics();
 
-        copyOfTasks = taskManager.getCopyOfTasks();
-        copyOfSubTasks = taskManager.getCopyOfSubTasks();
-        copyOfEpics = taskManager.getCopyOfEpics();
-        printTestDataByCopy(copyOfTasks, copyOfSubTasks, copyOfEpics);
+        lnkTasks = taskManager.getTasks();
+        lnkSubTasks = taskManager.getSubTasks();
+        lnkEpics = taskManager.getEpics();
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
 
     }
 }
