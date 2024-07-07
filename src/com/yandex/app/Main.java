@@ -4,7 +4,7 @@ import com.yandex.app.model.Epic;
 import com.yandex.app.model.SubTask;
 import com.yandex.app.model.Task;
 import com.yandex.app.model.Status;
-import com.yandex.app.service.TaskManager;
+import com.yandex.app.service.InMemoryTaskManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +76,7 @@ public class Main {
     public static void main(String[] args) {
 
         System.out.println("Поехали!");
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Task task1 = new Task("Отремонтировать плиту", "Вызвать мастера по ремонту плиты");
         Task task2 = new Task("Помыть машину", "Заехать вечером на мойку и помыть машину");
@@ -161,7 +161,7 @@ public class Main {
         printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
 
         System.out.println("Меняем статус всех подзадач");
-        for (SubTask copyOfSubTask : taskManager.getCopyOfSubTasks()) {
+        for (SubTask copyOfSubTask : taskManager.getSubTasks()) {
             SubTask subTask = taskManager.getSubTask(copyOfSubTask.getId());
             subTask.setStatus(Status.DONE);
             taskManager.updateTask(subTask);
