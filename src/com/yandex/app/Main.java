@@ -56,7 +56,8 @@ public class Main {
     public static void printTestDataByList(
         ArrayList<Task> tasks,
         ArrayList<SubTask> subTasks,
-        ArrayList<Epic> epics
+        ArrayList<Epic> epics,
+        ArrayList<Task> hitasks
     ){
         System.out.println("Задачи:");
         for (Task task : tasks) {
@@ -69,6 +70,10 @@ public class Main {
         System.out.println("Эпики:");
         for (Epic epic : epics) {
             System.out.println(epic);
+        }
+        System.out.println("История:");
+        for (Task task : hitasks) {
+            System.out.println(task);
         }
         System.out.println();
     }
@@ -117,7 +122,8 @@ public class Main {
         ArrayList<Task> lnkTasks = taskManager.getTasks();
         ArrayList<SubTask> lnkSubTasks = taskManager.getSubTasks();
         ArrayList<Epic> lnkEpics = taskManager.getEpics();
-        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
+        ArrayList<Task> hiTasks = taskManager.getHistory();
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics, hiTasks);
 
         System.out.println("Меняем статус задачи");
         task1.setStatus(Status.IN_PROGRESS);
@@ -125,12 +131,12 @@ public class Main {
         System.out.println("Меняем статус подзадачи");
         subTask1.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(subTask1);
-        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics, hiTasks);
 
         System.out.println("Меняем описание эпика");
         epic1.setDescription("Еженедельная уборка квартиры");
         taskManager.updateTask(epic1);
-        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics, hiTasks);
 
         System.out.println("Получить подзадачи эпика с id " + epic1.getId() + ", " + epic1.getTitle());
         ArrayList<SubTask> subTasksByEpic = taskManager.getSubTasksByEpic(epic1.getId());
@@ -158,15 +164,15 @@ public class Main {
         lnkTasks = taskManager.getTasks();
         lnkSubTasks = taskManager.getSubTasks();
         lnkEpics = taskManager.getEpics();
-        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics, hiTasks);
 
         System.out.println("Меняем статус всех подзадач");
-        for (SubTask copyOfSubTask : taskManager.getSubTasks()) {
-            SubTask subTask = taskManager.getSubTask(copyOfSubTask.getId());
+        ArrayList<SubTask> subTaskList = taskManager.getSubTasks();
+        for (SubTask subTask : subTaskList) {
             subTask.setStatus(Status.DONE);
             taskManager.updateTask(subTask);
         }
-        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics, hiTasks);
 
         System.out.println("Получить задачу по id " + task3.getId());
         System.out.println(taskManager.getTask(task3.getId()));
@@ -184,7 +190,7 @@ public class Main {
         lnkTasks = taskManager.getTasks();
         lnkSubTasks = taskManager.getSubTasks();
         lnkEpics = taskManager.getEpics();
-        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics, hiTasks);
 
         SubTask subTask7 = new SubTask("Помыть посуду","Помыть тарелки и чашки");
         SubTask subTask8 = new SubTask("Полить цветы", "Полить цветы во всех комнатах");
@@ -215,7 +221,10 @@ public class Main {
         lnkTasks = taskManager.getTasks();
         lnkSubTasks = taskManager.getSubTasks();
         lnkEpics = taskManager.getEpics();
-        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics, hiTasks);
+
+        ArrayList<Task> historyTask = taskManager.getHistory();
+        System.out.println(historyTask);
 
         System.out.println("Удаляем все эпики");
         taskManager.deleteAllEpics();
@@ -223,7 +232,7 @@ public class Main {
         lnkTasks = taskManager.getTasks();
         lnkSubTasks = taskManager.getSubTasks();
         lnkEpics = taskManager.getEpics();
-        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics);
+        printTestDataByList(lnkTasks, lnkSubTasks, lnkEpics, hiTasks);
 
     }
 }

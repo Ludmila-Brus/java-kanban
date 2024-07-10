@@ -17,11 +17,21 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
+    private ArrayList<Task> historyList = new ArrayList<>();
+
+    private void addTaskToHistory(Task task) {
+        if (historyList.size() == 10) {
+            historyList.remove(0);
+        }
+        historyList.add(task);
+    }
+
     @Override
     public int addTask(Task task) {
         task.setId(nextId);
         nextId++;
         tasks.put(task.getId(), task);
+        addTaskToHistory(task);
         return task.getId();
     }
 
@@ -30,6 +40,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setId(nextId);
         nextId++;
         subTasks.put(subTask.getId(), subTask);
+        addTaskToHistory(subTask);
         return subTask.getId();
     }
     
@@ -39,6 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
         nextId++;
         epics.put(epic.getId(), epic);
         syncEpic(epic);
+        addTaskToHistory(epic);
         return epic.getId();
     }
 
@@ -99,50 +111,17 @@ public class InMemoryTaskManager implements TaskManager {
         return epics.get(id);
     }
 
-    // получить список копий задач
-//    public ArrayList<Task> getCopyOfTasks() {
-//        ArrayList<Task> copyOfTasks = new ArrayList<>();
-//        for (Task task : tasks.values()) {
-//            Task copyOfTask = new Task(task.getId(), task.getTitle(), task.getDescription(), task.getStatus());
-//            copyOfTasks.add(copyOfTask);
-//        }
-//        return copyOfTasks;
-//    }
-
     // получить список задач
     @Override
     public ArrayList<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
 
-    // получить список копий подзадач
-//    public ArrayList<SubTask> getCopyOfSubTasks() {
-//        ArrayList<SubTask> copyOfSubTasks = new ArrayList<>();
-//        for (SubTask subTask : subTasks.values()) {
-//            SubTask copyOfSubTask = new SubTask(subTask.getId(), subTask.getTitle(), subTask.getDescription(), subTask.getStatus(), subTask.getEpicId());
-//            copyOfSubTasks.add(copyOfSubTask);
-//        }
-//        return copyOfSubTasks;
-//    }
-
     // получить список подзадач
     @Override
     public ArrayList<SubTask> getSubTasks() {
         return new ArrayList<>(subTasks.values());
     }
-
-    // получить список копий эпиков
-//    public ArrayList<Epic> getCopyOfEpics() {
-//        ArrayList<Epic> copyOfEpics = new ArrayList<>();
-//        for (Epic epic : epics.values()) {
-//            ArrayList<Integer> subTaskIds = epic.getSubTaskIds();
-//            ArrayList<Integer> copyOfSubTaskIds = new ArrayList<>();
-//            copyOfSubTaskIds.addAll(subTaskIds);
-//            Epic copyOfEpic = new Epic(epic.getId(), epic.getTitle(), epic.getDescription(), epic.getStatus(), copyOfSubTaskIds);
-//            copyOfEpics.add(copyOfEpic);
-//        }
-//        return copyOfEpics;
-//    }
 
     // получить список эпиков
     @Override
@@ -204,6 +183,11 @@ public class InMemoryTaskManager implements TaskManager {
             subTasks.clear();
             epics.clear();
         }
+    }
+
+    @Override
+    public ArrayList<Task> getHistory() {
+        return new ArrayList<>(historyList);
     }
 
     // всем подзадачам эпика присвоим id эпика и

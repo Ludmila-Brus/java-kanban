@@ -43,4 +43,6 @@ public interface TaskManager {
     void deleteAllSubTasks();
 
     void deleteAllEpics();
+
+    ArrayList<Task> getHistory();
 }
