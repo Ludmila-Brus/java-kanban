@@ -9,15 +9,15 @@ import java.util.ArrayList;
 public interface TaskManager {
     int addTask(Task task);
 
-    int addTask(SubTask subTask);
+    int addSubTask(SubTask subTask);
 
-    int addTask(Epic epic);
+    int addEpic(Epic epic);
 
     void updateTask(Task task);
 
-    void updateTask(SubTask subTask);
+    void updateSubTask(SubTask subTask);
 
-    void updateTask(Epic epic);
+    void updateEpic(Epic epic);
 
     void deleteTask(int id);
 

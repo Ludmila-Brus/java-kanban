@@ -1,6 +1,7 @@
 package com.yandex.app.model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Epic extends Task {
 
@@ -23,6 +24,10 @@ public class Epic extends Task {
         this.subTaskIds = subTaskIds;
     }
 
+    public void addSubTaskIds(int subTaskId) {
+        this.subTaskIds.add(subTaskId);
+    }
+
     @Override
     public String toString() {
         return "model.Epic{" +
@@ -33,4 +38,14 @@ public class Epic extends Task {
                 ", subTaskIds=" + this.getSubTaskIds() +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subTaskIds, epic.subTaskIds);
+    }
+
 }

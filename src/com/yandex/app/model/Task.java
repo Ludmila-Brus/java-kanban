@@ -1,5 +1,7 @@
 package com.yandex.app.model;
 
+import java.util.Objects;
+
 public class Task {
 
     private int id;
@@ -51,6 +53,17 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id &&
+            title.equals(task.title) &&
+            description.equals(task.description) &&
+            status == task.status;
     }
 
     @Override
