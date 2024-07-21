@@ -91,7 +91,7 @@ public class Main {
 
         System.out.println("Получить подзадачи эпика с несуществующим id = - 1");
         subTasksByEpic = taskManager.getSubTasksByEpic(-1);
-        if (subTasksByEpic != null) {
+        if (!subTasksByEpic.isEmpty()) {
             for (SubTask subTask : subTasksByEpic) {
                 System.out.println(subTask);
             }

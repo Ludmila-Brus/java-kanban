@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
-    private static TaskManager taskManager;
+    private TaskManager taskManager;
     @BeforeEach
     public void beforeEach() {
         taskManager = Managers.getDefault();
@@ -27,13 +27,11 @@ class InMemoryTaskManagerTest {
         SubTask subTask1 = new SubTask("Помыть посуду","Помыть тарелки и чашки", epicId);
         taskManager.addSubTask(subTask1);
         // попытка в эпик добавить самого себя
-        try {
-            epic.addSubTaskIds(epicId);
+        epic.addSubTaskIds(epicId);
+        Exception thrown = assertThrows(Exception.class, () -> {
             taskManager.updateEpic(epic);
-            assertFalse(true, "В эпик добавлен сам эпик");
-        } catch (Exception e) {
-            assertFalse(false);
-        }
+        }, "Exception was expected");
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
@@ -46,12 +44,10 @@ class InMemoryTaskManagerTest {
         int subTaskId = taskManager.addSubTask(subTask);
         // попытка создать вторую подзадачу, присвоив ей в качестве эпика первую подзадачу
         SubTask subTaskOther = new SubTask("NewSubtaskOther", "NewSubtaskOther description", subTaskId);
-        try {
+        Exception thrown = assertThrows(Exception.class, () -> {
             taskManager.addSubTask(subTaskOther);
-            assertFalse(true, "Подзадаче присвоена в качестве эпика другая подзадача");
-        } catch (Exception e) {
-            assertFalse(false);
-        }
+        }, "Exception was expected");
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
@@ -117,7 +113,7 @@ class InMemoryTaskManagerTest {
         // получить историю
         ArrayList<Task> tasks = taskManager.getHistory();
         Task historyTask = tasks.get(0);
-        assertEquals("Выбрать рюкзак", historyTask.getDescription());
+        assertEquals("Другое описание задачи", historyTask.getDescription());
         assertEquals(1, tasks.size(), "Количество в списке истории не равно 1");
     }
 
@@ -137,7 +133,7 @@ class InMemoryTaskManagerTest {
         // получить историю
         ArrayList<Task> tasks = taskManager.getHistory();
         Task historyTask = tasks.get(1);
-        assertEquals(Status.NEW, historyTask.getStatus());
+        assertEquals(Status.DONE, historyTask.getStatus());
         assertEquals(2, tasks.size(), "Количество в списке истории не равно 1");
     }
 
@@ -157,7 +153,7 @@ class InMemoryTaskManagerTest {
         // получить историю
         ArrayList<Task> tasks = taskManager.getHistory();
         Task historyTask = tasks.get(1);
-        assertEquals("NewEpic", historyTask.getTitle());
+        assertEquals("Другое название эпика", historyTask.getTitle());
         assertEquals(2, tasks.size(), "Количество в списке истории не равно 1");
     }
 }

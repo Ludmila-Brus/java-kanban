@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SubTaskTest {
 
-    private static TaskManager taskManager;
+    private TaskManager taskManager;
     @BeforeEach
     public void beforeEach() {
         taskManager = Managers.getDefault();

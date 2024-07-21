@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
 
+    // без static тест не работает
     private static TaskManager taskManager;
     @BeforeAll
     public static void beforeAll() {
