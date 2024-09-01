@@ -69,7 +69,7 @@ public class InMemoryTaskManager implements TaskManager {
         syncEpicStatus(epic);
         return subTask.getId();
     }
-    
+
     @Override
     public int addEpic(Epic epic) {
         epic.setId(nextId);
@@ -188,7 +188,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteAllTasks(){
+    public void deleteAllTasks() {
         if (tasks.isEmpty()) {
             System.out.println("Список задач пуст"); 
         } else {
@@ -198,9 +198,9 @@ public class InMemoryTaskManager implements TaskManager {
             tasks.clear();
         }
     }
-    
+
     @Override
-    public void deleteAllSubTasks(){
+    public void deleteAllSubTasks() {
         if (subTasks.isEmpty()) {
             System.out.println("Список подзадач пуст");
         } else {
@@ -219,7 +219,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteAllEpics(){
+    public void deleteAllEpics() {
         if (epics.isEmpty()) {
             System.out.println("Список епиков пуст");
         } else {
@@ -238,6 +238,5 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<Task> getHistory() {
         return historyManager.getHistory();
     }
-
 
 }
