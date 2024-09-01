@@ -189,7 +189,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllTasks() {
         if (tasks.isEmpty()) {
-            System.out.println("Список задач пуст"); 
+            System.out.println("Список задач пуст");
         } else {
             for (Integer taskId : tasks.keySet()) {
                 historyManager.remove(taskId);
