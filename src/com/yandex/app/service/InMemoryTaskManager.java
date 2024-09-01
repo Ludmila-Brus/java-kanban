@@ -28,7 +28,7 @@ public class InMemoryTaskManager implements TaskManager {
         return task.getId();
     }
 
-    // определим статус эпика
+    // определить статус эпика
     private void syncEpicStatus(Epic epic) {
         Status epicStatus = null;
         for (Integer subTaskId : epic.getSubTaskIds()) {
