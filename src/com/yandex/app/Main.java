@@ -6,7 +6,6 @@ import com.yandex.app.model.Task;
 import com.yandex.app.model.Status;
 import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
-import com.yandex.app.service.HistoryManager;
 
 import java.util.ArrayList;
 
@@ -103,9 +102,9 @@ public class Main {
         System.out.println("Удаляем задачу с id " + task2.getId());
         taskManager.deleteTask(task2.getId());
         System.out.println("Удаляем подзадачу с id " + subTask2.getId());
-        taskManager.deleteTask(subTask2.getId());
+        taskManager.deleteSubtask(subTask2.getId());
         System.out.println("Удаляем эпик с id " + epic2.getId());
-        taskManager.deleteTask(epic2.getId());
+        taskManager.deleteEpic(epic2.getId());
         printTestDataByList(taskManager);
 
         System.out.println("Меняем статус всех подзадач");
