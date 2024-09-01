@@ -13,7 +13,7 @@ public class Main {
 
     public static void printTestDataByList(
         TaskManager taskManager
-    ){
+    ) {
         System.out.println("Задачи:");
         for (Task task : taskManager.getTasks()) {
             System.out.println(task);
@@ -59,7 +59,7 @@ public class Main {
         SubTask subTask4 = new SubTask("Подзадача номер 4","Выбрать горшок", epic2Id);
         SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id);
         SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id);
-        
+
         final int subTask1Id = taskManager.addSubTask(subTask1);
         final int subTask2Id = taskManager.addSubTask(subTask2);
         final int subTask3Id = taskManager.addSubTask(subTask3);
