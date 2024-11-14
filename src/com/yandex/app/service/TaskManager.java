@@ -20,7 +20,7 @@ public interface TaskManager {
     void updateEpic(Epic epic);
 
     void deleteTask(int id);
-    void deleteSubtask(int id);
+    void deleteSubTask(int id);
     void deleteEpic(int id);
 
     Task getTask(int id);

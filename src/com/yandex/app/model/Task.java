@@ -22,6 +22,8 @@ public class Task {
         this.status = status;
     }
 
+    public TypeTask getTypeTask() {return TypeTask.TASK;}
+
     public Status getStatus() {
         return status;
     }
@@ -66,8 +68,7 @@ public class Task {
             status == task.status;
     }
 
-    @Override
-    public String toString() {
+    public String toStringAsModel() {
         return "model.Task{" +
                 "id=" + this.getId() +
                 ", title='" + this.getTitle() + '\'' +
@@ -75,4 +76,17 @@ public class Task {
                 ", status=" + this.getStatus() +
                 '}';
     }
+
+    @Override
+    public String toString() {
+        return String.join(
+                ",",
+                Integer.valueOf(this.getId()).toString(),
+                this.getTypeTask().toString(),
+                this.getTitle(),
+                this.getStatus().toString(),
+                this.getDescription()
+        );
+    }
+
 }
