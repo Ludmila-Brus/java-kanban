@@ -7,7 +7,12 @@ import com.yandex.app.model.Status;
 import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
 import com.yandex.app.service.HistoryManager;
+import com.yandex.app.service.FileBackedTaskManager;
 
+import javax.imageio.IIOException;
+import java.io.IOException;
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Main {
@@ -34,11 +39,34 @@ public class Main {
         System.out.println();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         System.out.println("Поехали!");
-        TaskManager taskManager = Managers.getDefault();
+       // TaskManager taskManager = Managers.getDefault();
+        FileBackedTaskManager taskManager = null;
 
+        final String HOME = System.getProperty("user.home");
+        System.out.println("HOME " + HOME);
+        File fileBacked = new File(String.valueOf(Paths.get(HOME, "testFile.txt")));
+        if (fileBacked.exists()) {
+            // восстановление из файла
+            taskManager = FileBackedTaskManager.loadFromFile(fileBacked);
+        } else {
+            boolean createFile = fileBacked.createNewFile();
+            if (createFile) {
+                System.out.println("Файл успешно создан.");
+                taskManager = new FileBackedTaskManager(fileBacked);
+            }
+        }
+
+        // посмотреть напечатать что получилось
+        if (taskManager != null) {
+            printTestDataByList(taskManager);
+        }
+
+        System.exit(0);
+
+        // добавить новое
         Task task1 = new Task("Задача номер 1", "Вызвать мастера");
         Task task2 = new Task("Задача номер 2", "Заехать на мойку");
         Task task3 = new Task("Задача номер 3", "Зайти в магазин");
@@ -124,34 +152,34 @@ public class Main {
         System.out.println(taskManager.getEpic(epic1.getId()));
         System.out.println();
 
-        System.out.println("Удаляем все задачи");
-        taskManager.deleteAllTasks();
-        System.out.println("Удаляем все подзадачи");
-        taskManager.deleteAllSubTasks();
-        printTestDataByList(taskManager);
-
-        Epic epic3 = new Epic("Эпик номер 3", "Навести порядок");
-        int epic3Id = taskManager.addEpic(epic3);
-        Epic epic4 = new Epic("Эпик номер 4", "Пересадить отросток");
-        int epic4Id = taskManager.addEpic(epic4);
-
-        SubTask subTask7 = new SubTask("Помыть посуду","Помыть тарелки", epic3Id);
-        SubTask subTask8 = new SubTask("Полить цветы", "Полить всех", epic3Id);
-        SubTask subTask9 = new SubTask("Подмести пол", "Подмести всех", epic3Id);
-        SubTask subTask10 = new SubTask("Купить горшок","Выбрать горшок", epic4Id);
-        SubTask subTask11 = new SubTask("Заполнить землей", "Купить грунт", epic4Id);
-        SubTask subTask12 = new SubTask("Посадить цветок", "Посадить отросток", epic4Id);
-        taskManager.addSubTask(subTask7);
-        taskManager.addSubTask(subTask8);
-        taskManager.addSubTask(subTask9);
-        taskManager.addSubTask(subTask10);
-        taskManager.addSubTask(subTask11);
-        taskManager.addSubTask(subTask12);
-        printTestDataByList(taskManager);
-
-        System.out.println("Удаляем все эпики");
-        taskManager.deleteAllEpics();
-        printTestDataByList(taskManager);
+//        System.out.println("Удаляем все задачи");
+//        taskManager.deleteAllTasks();
+//        System.out.println("Удаляем все подзадачи");
+//        taskManager.deleteAllSubTasks();
+//        printTestDataByList(taskManager);
+//
+//        Epic epic3 = new Epic("Эпик номер 3", "Навести порядок");
+//        int epic3Id = taskManager.addEpic(epic3);
+//        Epic epic4 = new Epic("Эпик номер 4", "Пересадить отросток");
+//        int epic4Id = taskManager.addEpic(epic4);
+//
+//        SubTask subTask7 = new SubTask("Помыть посуду","Помыть тарелки", epic3Id);
+//        SubTask subTask8 = new SubTask("Полить цветы", "Полить всех", epic3Id);
+//        SubTask subTask9 = new SubTask("Подмести пол", "Подмести всех", epic3Id);
+//        SubTask subTask10 = new SubTask("Купить горшок","Выбрать горшок", epic4Id);
+//        SubTask subTask11 = new SubTask("Заполнить землей", "Купить грунт", epic4Id);
+//        SubTask subTask12 = new SubTask("Посадить цветок", "Посадить отросток", epic4Id);
+//        taskManager.addSubTask(subTask7);
+//        taskManager.addSubTask(subTask8);
+//        taskManager.addSubTask(subTask9);
+//        taskManager.addSubTask(subTask10);
+//        taskManager.addSubTask(subTask11);
+//        taskManager.addSubTask(subTask12);
+//        printTestDataByList(taskManager);
+//
+//        System.out.println("Удаляем все эпики");
+//        taskManager.deleteAllEpics();
+//        printTestDataByList(taskManager);
 
     }
 }

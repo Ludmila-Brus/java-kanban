@@ -46,6 +46,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.fileBacked))) {
 
+                writer.write("id,type,name,status,description,epic");
+                writer.newLine();
+
                 ArrayList<Task> taskArrayList = super.getTasks();
                 for (Task task : taskArrayList) {
                     String taskString = task.toString();
@@ -151,7 +154,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public static void loadFromFile(File fileBacked) {
+    public static FileBackedTaskManager loadFromFile(File fileBacked) {
 
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(fileBacked);
         try {
@@ -162,17 +165,35 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (int i = 1; i < lines.length; i++) {
                 final Task task = fileBackedTaskManager.fromString(lines[i]);
                 if (task.getTypeTask() == TypeTask.TASK) {
+                    if (task.getId() > fileBackedTaskManager.getNextId()) {
+                        fileBackedTaskManager.setNextId(task.getId());
+                    }
+                    System.out.println("task " + task.getId());
+                    System.out.println("task gen" + fileBackedTaskManager.getNextId());
+
                     fileBackedTaskManager.addTask(task);
-                } else if (task.getTypeTask() == TypeTask.SUBTASK) {
-                    fileBackedTaskManager.addSubTask((SubTask) task);
                 } else if (task.getTypeTask() == TypeTask.EPIC) {
+                    if (task.getId() > fileBackedTaskManager.getNextId()) {
+                        fileBackedTaskManager.setNextId(task.getId());
+                    }
+                    System.out.println("epic " + task.getId());
+                    System.out.println("epic gen " + fileBackedTaskManager.getNextId());
+
                     fileBackedTaskManager.addEpic((Epic) task);
+                } else if (task.getTypeTask() == TypeTask.SUBTASK) {
+                    if (task.getId() > fileBackedTaskManager.getNextId()) {
+                        fileBackedTaskManager.setNextId(task.getId());
+                    }
+                    System.out.println("subtask " + task.getId());
+                    System.out.println("subtask gen" + fileBackedTaskManager.getNextId());
+
+                    fileBackedTaskManager.addSubTask((SubTask) task);
                 }
             }
         } catch (IOException exc) {
             throw new ManagerSaveException("Ошибка чтения из файла " + fileBacked.getName() + " ", exc.getMessage());
         }
         
-        // test дорабатываем ?
+        return fileBackedTaskManager;
     }
 }

@@ -19,6 +19,13 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
+    public int getNextId() {
+        return this.nextId;
+    }
+
+    public void setNextId(int nextId) {
+        this.nextId = nextId;
+    }
 
     @Override
     public int addTask(Task task) {
@@ -63,6 +70,7 @@ public class InMemoryTaskManager implements TaskManager {
         // добавить подзадачу в hash-список менеджера
         subTasks.put(subTask.getId(), subTask);
         // добавить подзадачу в список эпика
+        System.out.println("subTask.getId() " + subTask.getId());
         epic.addSubTaskIds(subTask.getId());
         // обновить статус эпика
         syncEpicStatus(epic);
