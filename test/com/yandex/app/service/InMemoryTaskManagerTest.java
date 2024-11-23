@@ -112,7 +112,8 @@ class InMemoryTaskManagerTest {
         taskManager.updateTask(task);
         // получить историю
         ArrayList<Task> tasks = taskManager.getHistory();
-        Task historyTask = tasks.get(0);
+        int historyTaskIndex = tasks.indexOf(task);
+        Task historyTask = tasks.get(historyTaskIndex);
         assertEquals("Другое описание задачи", historyTask.getDescription());
         assertEquals(1, tasks.size(), "Количество в списке истории не равно 1");
     }
@@ -132,7 +133,8 @@ class InMemoryTaskManagerTest {
         taskManager.updateSubTask(subTask);
         // получить историю
         ArrayList<Task> tasks = taskManager.getHistory();
-        Task historyTask = tasks.get(1);
+        int historyTaskIndex = tasks.indexOf(subTask);
+        Task historyTask = tasks.get(historyTaskIndex);
         assertEquals(Status.DONE, historyTask.getStatus());
         assertEquals(2, tasks.size(), "Количество в списке истории не равно 1");
     }
@@ -152,8 +154,64 @@ class InMemoryTaskManagerTest {
         taskManager.updateEpic(epic);
         // получить историю
         ArrayList<Task> tasks = taskManager.getHistory();
-        Task historyTask = tasks.get(1);
+        int historyTaskId = tasks.indexOf(savedEpic);
+        Task historyTask = tasks.get(historyTaskId);
         assertEquals("Другое название эпика", historyTask.getTitle());
-        assertEquals(2, tasks.size(), "Количество в списке истории не равно 1");
+        assertEquals(1, tasks.size(), "Количество в списке истории не равно 1");
     }
+
+    @Test
+    void shouldBeDeletedFromHistoryTask() {
+        // создать задачу
+        Task task = new Task("Задача 1", "Выбрать рюкзак");
+        final int taskId = taskManager.addTask(task);
+        // сохранить в историю
+        Task savedTask = taskManager.getTask(taskId);
+        // удалить задачу
+        taskManager.deleteTask(taskId);
+        // получить историю
+        ArrayList<Task> tasks = taskManager.getHistory();
+        int historyTaskIndex = tasks.indexOf(task);
+        assertEquals(-1, historyTaskIndex, "Задача должна быть удалена из истории");
+    }
+
+    @Test
+    void shouldBeDeletedFromHistorySubTask() {
+        // создать эпик для подзадачи
+        Epic epic = new Epic("NewEpic", "NewEpic description");
+        int epicId = taskManager.addEpic(epic);
+        // создать подзадачу
+        SubTask subTask = new SubTask("Подзадача 1", "Подзадача описание", epicId);
+        final int subTaskId = taskManager.addSubTask(subTask);
+        // сохранить в историю
+        SubTask savedSubTask = taskManager.getSubTask(subTaskId);
+        // удалить подзадачу
+        taskManager.deleteSubtask(subTaskId);
+        // получить историю
+        ArrayList<Task> tasks = taskManager.getHistory();
+        int historySubTaskIndex = tasks.indexOf(subTask);
+        assertEquals(-1, historySubTaskIndex, "Подзадача должна быть удалена из истории");
+    }
+
+    @Test
+    void shouldBeDeletedFromHistoryEpic() {
+        // создать эпик
+        Epic epic = new Epic("NewEpic", "NewEpic description");
+        int epicId = taskManager.addEpic(epic);
+        // создать подзадачу
+        SubTask subTask = new SubTask("Подзадача 1", "Подзадача описание", epicId);
+        final int subTaskId = taskManager.addSubTask(subTask);
+        // сохранить в историю
+        Epic savedEpic = taskManager.getEpic(epicId);
+        // удалить эпик
+        taskManager.deleteEpic(epicId);
+        // получить историю
+        ArrayList<Task> tasks = taskManager.getHistory();
+        int historyEpicId = tasks.indexOf(savedEpic);
+        int historySubTaskId = tasks.indexOf(subTask);
+        assertEquals(-1, historyEpicId, "Эпик должен быть удален из истории");
+        assertEquals(-1, historySubTaskId, "Подзадача должна быть удалена из истории");
+    }
+
+
 }
