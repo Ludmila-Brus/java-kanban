@@ -70,7 +70,7 @@ public class InMemoryTaskManager implements TaskManager {
         // добавить подзадачу в hash-список менеджера
         subTasks.put(subTask.getId(), subTask);
         // добавить подзадачу в список эпика
-        System.out.println("subTask.getId() " + subTask.getId());
+        //System.out.println("subTask.getId() " + subTask.getId());
         epic.addSubTaskIds(subTask.getId());
         // обновить статус эпика
         syncEpicStatus(epic);

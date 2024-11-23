@@ -15,9 +15,7 @@ class InMemoryTaskManagerTest {
 
     private TaskManager taskManager;
     @BeforeEach
-    public void beforeEach() {
-        taskManager = Managers.getDefault();
-    }
+    public void beforeEach() {taskManager = Managers.getDefault();}
     @Test
     void shouldBeFalseWhenEpicToEpic() {
         // создать первый эпик

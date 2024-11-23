@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public class Main {
 
     public static void printTestDataByList(
-        TaskManager taskManager
-    ){
+            TaskManager taskManager
+    ) {
         System.out.println("Задачи:");
         for (Task task : taskManager.getTasks()) {
             System.out.println(task);
@@ -42,35 +42,13 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         System.out.println("Поехали!");
-       // TaskManager taskManager = Managers.getDefault();
-        FileBackedTaskManager taskManager = null;
+        TaskManager taskManager = Managers.getDefault();
 
-        final String HOME = System.getProperty("user.home");
-        System.out.println("HOME " + HOME);
-        File fileBacked = new File(String.valueOf(Paths.get(HOME, "testFile.txt")));
-        if (fileBacked.exists()) {
-            // восстановление из файла
-            taskManager = FileBackedTaskManager.loadFromFile(fileBacked);
-        } else {
-            boolean createFile = fileBacked.createNewFile();
-            if (createFile) {
-                System.out.println("Файл успешно создан.");
-                taskManager = new FileBackedTaskManager(fileBacked);
-            }
-        }
-
-        // посмотреть напечатать что получилось
-        if (taskManager != null) {
-            printTestDataByList(taskManager);
-        }
-
-        System.exit(0);
-
-        // добавить новое
+        // добавить задачи, эпики, подзадачи
         Task task1 = new Task("Задача номер 1", "Вызвать мастера");
         Task task2 = new Task("Задача номер 2", "Заехать на мойку");
         Task task3 = new Task("Задача номер 3", "Зайти в магазин");
-        Task task4 = new Task("Задача номер 4", "Выбрать рюезак");
+        Task task4 = new Task("Задача номер 4", "Выбрать рюкзак");
 
         final int task1Id = taskManager.addTask(task1);
         final int task2Id = taskManager.addTask(task2);
@@ -82,13 +60,13 @@ public class Main {
         Epic epic2 = new Epic("Эпик номер 2", "Пересадить отросток");
         final int epic2Id = taskManager.addEpic(epic2);
 
-        SubTask subTask1 = new SubTask("Подзадача номер 1","Помыть тарелки и чашки", epic1Id);
+        SubTask subTask1 = new SubTask("Подзадача номер 1", "Помыть тарелки и чашки", epic1Id);
         SubTask subTask2 = new SubTask("Подзадача номер 2", "Полить цветы", epic1Id);
         SubTask subTask3 = new SubTask("Подзадача номер 3", "Подмести", epic1Id);
-        SubTask subTask4 = new SubTask("Подзадача номер 4","Выбрать горшок", epic2Id);
+        SubTask subTask4 = new SubTask("Подзадача номер 4", "Выбрать горшок", epic2Id);
         SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id);
         SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id);
-        
+
         final int subTask1Id = taskManager.addSubTask(subTask1);
         final int subTask2Id = taskManager.addSubTask(subTask2);
         final int subTask3Id = taskManager.addSubTask(subTask3);
@@ -131,9 +109,9 @@ public class Main {
         System.out.println("Удаляем задачу с id " + task2.getId());
         taskManager.deleteTask(task2.getId());
         System.out.println("Удаляем подзадачу с id " + subTask2.getId());
-        taskManager.deleteTask(subTask2.getId());
+        taskManager.deleteSubTask(subTask2.getId());
         System.out.println("Удаляем эпик с id " + epic2.getId());
-        taskManager.deleteTask(epic2.getId());
+        taskManager.deleteEpic(epic2.getId());
         printTestDataByList(taskManager);
 
         System.out.println("Меняем статус всех подзадач");
@@ -152,34 +130,36 @@ public class Main {
         System.out.println(taskManager.getEpic(epic1.getId()));
         System.out.println();
 
-//        System.out.println("Удаляем все задачи");
-//        taskManager.deleteAllTasks();
-//        System.out.println("Удаляем все подзадачи");
-//        taskManager.deleteAllSubTasks();
-//        printTestDataByList(taskManager);
-//
-//        Epic epic3 = new Epic("Эпик номер 3", "Навести порядок");
-//        int epic3Id = taskManager.addEpic(epic3);
-//        Epic epic4 = new Epic("Эпик номер 4", "Пересадить отросток");
-//        int epic4Id = taskManager.addEpic(epic4);
-//
-//        SubTask subTask7 = new SubTask("Помыть посуду","Помыть тарелки", epic3Id);
-//        SubTask subTask8 = new SubTask("Полить цветы", "Полить всех", epic3Id);
-//        SubTask subTask9 = new SubTask("Подмести пол", "Подмести всех", epic3Id);
-//        SubTask subTask10 = new SubTask("Купить горшок","Выбрать горшок", epic4Id);
-//        SubTask subTask11 = new SubTask("Заполнить землей", "Купить грунт", epic4Id);
-//        SubTask subTask12 = new SubTask("Посадить цветок", "Посадить отросток", epic4Id);
-//        taskManager.addSubTask(subTask7);
-//        taskManager.addSubTask(subTask8);
-//        taskManager.addSubTask(subTask9);
-//        taskManager.addSubTask(subTask10);
-//        taskManager.addSubTask(subTask11);
-//        taskManager.addSubTask(subTask12);
-//        printTestDataByList(taskManager);
-//
-//        System.out.println("Удаляем все эпики");
-//        taskManager.deleteAllEpics();
-//        printTestDataByList(taskManager);
+        System.out.println("Удаляем все задачи");
+        taskManager.deleteAllTasks();
+        System.out.println("Удаляем все подзадачи");
+        taskManager.deleteAllSubTasks();
+        printTestDataByList(taskManager);
+
+        Epic epic3 = new Epic("Эпик номер 3", "Навести порядок");
+        int epic3Id = taskManager.addEpic(epic3);
+        Epic epic4 = new Epic("Эпик номер 4", "Пересадить отросток");
+        int epic4Id = taskManager.addEpic(epic4);
+        printTestDataByList(taskManager);
+
+        SubTask subTask7 = new SubTask("Помыть посуду", "Помыть тарелки", epic3Id);
+        SubTask subTask8 = new SubTask("Полить цветы", "Полить всех", epic3Id);
+        SubTask subTask9 = new SubTask("Подмести пол", "Подмести всех", epic3Id);
+        SubTask subTask10 = new SubTask("Купить горшок", "Выбрать горшок", epic4Id);
+        SubTask subTask11 = new SubTask("Заполнить землей", "Купить грунт", epic4Id);
+        SubTask subTask12 = new SubTask("Посадить цветок", "Посадить отросток", epic4Id);
+        taskManager.addSubTask(subTask7);
+        taskManager.addSubTask(subTask8);
+        taskManager.addSubTask(subTask9);
+        taskManager.addSubTask(subTask10);
+        taskManager.addSubTask(subTask11);
+        taskManager.addSubTask(subTask12);
+        printTestDataByList(taskManager);
+        System.out.println(taskManager.getSubTasks());
+
+        System.out.println("Удаляем все эпики");
+        taskManager.deleteAllEpics();
+        printTestDataByList(taskManager);
 
     }
 }
