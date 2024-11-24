@@ -6,13 +6,7 @@ import com.yandex.app.model.Task;
 import com.yandex.app.model.Status;
 import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
-
-import com.yandex.app.service.FileBackedTaskManager;
-
-import javax.imageio.IIOException;
 import java.io.IOException;
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Main {
