@@ -180,7 +180,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException exc) {
             throw new ManagerSaveException("Ошибка чтения из файла " + fileBacked.getName() + " ", exc.getMessage());
         }
-        
         return fileBackedTaskManager;
     }
 
@@ -215,7 +214,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println("home dir " + HOME);
         File fileBacked = new File(String.valueOf(Paths.get(HOME, "testFile.txt")));
         if (fileBacked.exists()) {
-            boolean Deleted = fileBacked.delete();
+            boolean bDeleted = fileBacked.delete();
         }
         boolean createFile = fileBacked.createNewFile();
         if (createFile) {
