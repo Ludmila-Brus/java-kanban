@@ -6,7 +6,7 @@ import com.yandex.app.model.Task;
 import com.yandex.app.model.Status;
 import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
-import com.yandex.app.service.HistoryManager;
+
 import com.yandex.app.service.FileBackedTaskManager;
 
 import javax.imageio.IIOException;
@@ -155,7 +155,6 @@ public class Main {
         taskManager.addSubTask(subTask11);
         taskManager.addSubTask(subTask12);
         printTestDataByList(taskManager);
-        System.out.println(taskManager.getSubTasks());
 
         System.out.println("Удаляем все эпики");
         taskManager.deleteAllEpics();

@@ -1,7 +1,5 @@
 package com.yandex.app.model;
 
-import java.util.Objects;
-
 public class SubTask extends Task {
     private int epicId;
 
