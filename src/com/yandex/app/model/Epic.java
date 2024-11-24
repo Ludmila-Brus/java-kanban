@@ -19,7 +19,9 @@ public class Epic extends Task {
         }
     }
 
-    public TypeTask getTypeTask() {return TypeTask.EPIC;}
+    public TypeTask getTypeTask() {
+        return TypeTask.EPIC;
+    }
 
     public ArrayList<Integer> getSubTaskIds() {
         return subTaskIds;
