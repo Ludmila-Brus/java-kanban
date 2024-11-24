@@ -9,7 +9,7 @@ public class ManagerSaveException extends RuntimeException {
         this.strVal = strVal;
     }
 
-    public String getDetailMessage(){
+    public String getDetailMessage() {
         return super.getMessage() + " " + this.strVal;
     }
 }
