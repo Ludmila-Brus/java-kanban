@@ -14,6 +14,10 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
+    public TypeTask getTypeTask() {
+        return TypeTask.SUBTASK;
+    }
+
     public int getEpicId() {
         return epicId;
     }
@@ -31,8 +35,7 @@ public class SubTask extends Task {
         return epicId == subTask.epicId;
     }
 
-    @Override
-    public String toString() {
+    public String toStringAsModel() {
         return "model.SubTask{" +
                 "id=" + this.getId() +
                 ", title='" + this.getTitle() + '\'' +
@@ -40,5 +43,18 @@ public class SubTask extends Task {
                 ", status=" + this.getStatus() +
                 ", epicId=" + this.getEpicId() +
                 '}';
+    }
+
+    @Override
+    public String toString() {
+        return String.join(
+                ",",
+                Integer.valueOf(this.getId()).toString(),
+                this.getTypeTask().toString(),
+                this.getTitle(),
+                this.getStatus().toString(),
+                this.getDescription(),
+                Integer.valueOf(this.getEpicId()).toString()
+        );
     }
 }
