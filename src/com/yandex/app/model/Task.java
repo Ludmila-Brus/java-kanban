@@ -20,7 +20,9 @@ public class Task {
         this.status = status;
     }
 
-    public TypeTask getTypeTask() {return TypeTask.TASK;}
+    public TypeTask getTypeTask() {
+        return TypeTask.TASK;
+    }
 
     public Status getStatus() {
         return status;
