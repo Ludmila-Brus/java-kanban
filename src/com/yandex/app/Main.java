@@ -11,9 +11,7 @@ import java.util.ArrayList;
 
 public class Main {
 
-    public static void printTestDataByList(
-            TaskManager taskManager
-    ) {
+    public static void printTestDataByList(TaskManager taskManager) {
         System.out.println("Задачи:");
         for (Task task : taskManager.getTasks()) {
             System.out.println(task);

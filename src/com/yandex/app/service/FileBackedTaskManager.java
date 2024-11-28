@@ -26,12 +26,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         if (typeTask == TypeTask.TASK) {
             return new Task(id, title, description, status);
-        } else if
-        (typeTask == TypeTask.SUBTASK) {
+        } else if (typeTask == TypeTask.SUBTASK) {
             int epicId = Integer.parseInt(paramTask[5]);
             return new SubTask(id, title, description, status, epicId);
-        } else if
-        (typeTask == TypeTask.EPIC) {
+        } else if (typeTask == TypeTask.EPIC) {
             return new Epic(id, title, description, status, null);
         }
         return null;
@@ -76,24 +74,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public int addTask(Task task) {
-        int k;
-        k = super.addTask(task);
+        int taskId = super.addTask(task);
         save();
-        return k;
+        return taskId;
     }
 
     @Override
     public int addSubTask(SubTask subTask) {
-        int k = super.addSubTask(subTask);
+        int taskId = super.addSubTask(subTask);
         save();
-        return k;
+        return taskId;
     }
 
     @Override
     public int addEpic(Epic epic) {
-        int k = super.addEpic(epic);
+        int taskId = super.addEpic(epic);
         save();
-        return k;
+        return taskId;
     }
 
     @Override
@@ -183,9 +180,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return fileBackedTaskManager;
     }
 
-    public static void printTestDataByList(
-            TaskManager taskManager
-    ) {
+    public static void printTestDataByList(TaskManager taskManager) {
         System.out.println("Задачи:");
         for (Task task : taskManager.getTasks()) {
             System.out.println(task);
