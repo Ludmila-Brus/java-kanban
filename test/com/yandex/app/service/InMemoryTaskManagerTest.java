@@ -15,9 +15,7 @@ class InMemoryTaskManagerTest {
 
     private TaskManager taskManager;
     @BeforeEach
-    public void beforeEach() {
-        taskManager = Managers.getDefault();
-    }
+    public void beforeEach() {taskManager = Managers.getDefault();}
     @Test
     void shouldBeFalseWhenEpicToEpic() {
         // создать первый эпик
@@ -186,7 +184,7 @@ class InMemoryTaskManagerTest {
         // сохранить в историю
         SubTask savedSubTask = taskManager.getSubTask(subTaskId);
         // удалить подзадачу
-        taskManager.deleteSubtask(subTaskId);
+        taskManager.deleteSubTask(subTaskId);
         // получить историю
         ArrayList<Task> tasks = taskManager.getHistory();
         int historySubTaskIndex = tasks.indexOf(subTask);

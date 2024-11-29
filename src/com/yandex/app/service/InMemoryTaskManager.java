@@ -19,6 +19,14 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
+    public int getNextId() {
+        return this.nextId;
+    }
+
+    public void setNextId(int nextId) {
+        this.nextId = nextId;
+    }
+
     @Override
     public int addTask(Task task) {
         task.setId(nextId);
@@ -99,12 +107,12 @@ public class InMemoryTaskManager implements TaskManager {
             tasks.remove(id);
             historyManager.remove(id);
         } else {
-            System.out.println("Задача с id = " + id + "не найдена");
+            System.out.println("Задача с id = " + id + " не найдена");
         }
     }
 
     @Override
-    public void deleteSubtask(int id) {
+    public void deleteSubTask(int id) {
         if (subTasks.containsKey(id)) {
             int epicId = subTasks.get(id).getEpicId();
             Epic epic = epics.get(epicId);
@@ -115,7 +123,7 @@ public class InMemoryTaskManager implements TaskManager {
             syncEpicStatus(epic);
             historyManager.remove(id);
         } else {
-            System.out.println("Подзадача с id = " + id + "не найдена");
+            System.out.println("Подзадача с id = " + id + " не найдена");
         }
     }
 
@@ -129,7 +137,7 @@ public class InMemoryTaskManager implements TaskManager {
             epics.remove(id);
             historyManager.remove(id);
         } else {
-            System.out.println("Эпик с id = " + id + "не найден");
+            System.out.println("Эпик с id = " + id + " не найден");
         }
     }
 
