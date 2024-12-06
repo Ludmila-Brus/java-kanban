@@ -33,7 +33,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        System.out.println("Поехали!");
+        System.out.println("Поехали вперед!");
         TaskManager taskManager = Managers.getDefault();
 
         // добавить задачи, эпики, подзадачи
