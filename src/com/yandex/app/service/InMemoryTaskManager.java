@@ -59,6 +59,31 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setStatus((epicStatus != null) ? epicStatus : Status.NEW);
     }
 
+    // определить время начала, продолжительность и время окончания эпика
+    // TODO
+    private void syncEpicDuration(Epic epic) {
+        Status epicStatus = null;
+        for (Integer subTaskId : epic.getSubTaskIds()) {
+            SubTask subTask = subTasks.get(subTaskId);
+            if (subTask.getStatus() == Status.NEW) {
+                if (epicStatus != Status.NEW && epicStatus != null) {
+                    epicStatus = Status.IN_PROGRESS;
+                } else {
+                    epicStatus = Status.NEW;
+                }
+            } else if (subTask.getStatus() == Status.DONE) {
+                if (epicStatus != Status.DONE && epicStatus != null) {
+                    epicStatus = Status.IN_PROGRESS;
+                } else {
+                    epicStatus = Status.DONE;
+                }
+            } else if (subTask.getStatus() == Status.IN_PROGRESS) {
+                epicStatus = Status.IN_PROGRESS;
+            }
+        }
+        epic.setStatus((epicStatus != null) ? epicStatus : Status.NEW);
+    }
+
     @Override
     public int addSubTask(SubTask subTask) {
         // получить эпик

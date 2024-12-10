@@ -1,23 +1,33 @@
 package com.yandex.app.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 public class Task {
 
     private int id;
     private String title;
     private String description;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
 
-    public Task(String title, String description) {
+    public Task(String title, String description, Duration duration, LocalDateTime startTime) {
         this.title = title;
         this.description = description;
         this.status = Status.NEW;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
-    public Task(int id, String title, String description, Status status) {
+    public Task(int id, String title, String description, Status status, Duration duration, LocalDateTime startTime) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public TypeTask getTypeTask() {
@@ -57,6 +67,26 @@ public class Task {
         this.description = description;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return this.startTime.plus(this.duration);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,7 +115,10 @@ public class Task {
                 this.getTypeTask().toString(),
                 this.getTitle(),
                 this.getStatus().toString(),
-                this.getDescription()
+                this.getDescription(),
+                null,
+                Objects.isNull(this.getDuration())?null:this.getDuration().toString(),
+                Objects.isNull(this.getStartTime())?null:this.getStartTime().toString()
         );
     }
 

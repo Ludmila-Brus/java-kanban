@@ -1,16 +1,19 @@
 package com.yandex.app.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
     private int epicId;
 
-    public SubTask(String title, String description, int epicId) {
+    public SubTask(String title, String description, int epicId, Duration duration, LocalDateTime startTime) {
 
-        super(title, description);
+        super(title, description, duration, startTime);
         this.epicId = epicId;
     }
 
-    public SubTask(int id, String title, String description, Status status, int epicId) {
-        super(id, title, description, status);
+    public SubTask(int id, String title, String description, Status status, int epicId, Duration duration, LocalDateTime startTime) {
+        super(id, title, description, status, duration, startTime);
         this.epicId = epicId;
     }
 
@@ -54,7 +57,9 @@ public class SubTask extends Task {
                 this.getTitle(),
                 this.getStatus().toString(),
                 this.getDescription(),
-                Integer.valueOf(this.getEpicId()).toString()
+                Integer.valueOf(this.getEpicId()).toString(),
+                this.getDuration().toString(),
+                this.getStartTime().toString()
         );
     }
 }
