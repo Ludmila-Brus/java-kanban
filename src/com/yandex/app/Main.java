@@ -7,10 +7,12 @@ import com.yandex.app.model.Status;
 import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class Main {
 
@@ -31,6 +33,11 @@ public class Main {
         for (Task task : taskManager.getHistory()) {
             System.out.println(task);
         }
+        System.out.println("Задачи и подзадачи в порядке приоритета:");
+        for (Task task : taskManager.getPrioritizedTasks()) {
+            System.out.println(task);
+        }
+
         System.out.println();
     }
 
@@ -44,9 +51,9 @@ public class Main {
 
         // добавить задачи, эпики, подзадачи
         Task task1 = new Task("Задача номер 1", "Вызвать мастера", duration45Min, dateTimeNow);
-        Task task2 = new Task("Задача номер 2", "Заехать на мойку", duration45Min, dateTimeNow.plusDays(1));
-        Task task3 = new Task("Задача номер 3", "Зайти в магазин", duration45Min, dateTimeNow.plusDays(2));
-        Task task4 = new Task("Задача номер 4", "Выбрать рюкзак", duration45Min, dateTimeNow.plusDays(3));
+        Task task2 = new Task("Задача номер 2", "Заехать на мойку", duration45Min, dateTimeNow.plusDays(2));
+        Task task3 = new Task("Задача номер 3", "Зайти в магазин", duration45Min, dateTimeNow.plusDays(4));
+        Task task4 = new Task("Задача номер 4", "Выбрать рюкзак", duration45Min, dateTimeNow.plusDays(6));
 
         final int task1Id = taskManager.addTask(task1);
         final int task2Id = taskManager.addTask(task2);
@@ -58,12 +65,12 @@ public class Main {
         Epic epic2 = new Epic("Эпик номер 2", "Пересадить отросток", null, null);
         final int epic2Id = taskManager.addEpic(epic2);
 
-        SubTask subTask1 = new SubTask("Подзадача номер 1", "Помыть тарелки и чашки", epic1Id, duration45Min, dateTimeNow);
-        SubTask subTask2 = new SubTask("Подзадача номер 2", "Полить цветы", epic1Id, duration45Min, dateTimeNow.plusDays(1));
-        SubTask subTask3 = new SubTask("Подзадача номер 3", "Подмести", epic1Id, duration45Min, dateTimeNow.plusDays(2));
-        SubTask subTask4 = new SubTask("Подзадача номер 4", "Выбрать горшок", epic2Id, duration45Min, dateTimeNow.plusDays(3));
-        SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id, duration45Min, dateTimeNow.plusDays(4));
-        SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id, duration45Min, dateTimeNow.plusDays(5));
+        SubTask subTask1 = new SubTask("Подзадача номер 1", "Помыть тарелки и чашки", epic1Id, duration45Min, dateTimeNow.plusDays(1));
+        SubTask subTask2 = new SubTask("Подзадача номер 2", "Полить цветы", epic1Id, duration45Min, dateTimeNow.plusDays(3));
+        SubTask subTask3 = new SubTask("Подзадача номер 3", "Подмести", epic1Id, duration45Min, dateTimeNow.plusDays(5));
+        SubTask subTask4 = new SubTask("Подзадача номер 4", "Выбрать горшок", epic2Id, duration45Min, dateTimeNow.plusDays(7));
+        SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id, duration45Min, dateTimeNow.plusDays(8));
+        SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id, duration45Min, dateTimeNow.plusDays(9));
 
         final int subTask1Id = taskManager.addSubTask(subTask1);
         final int subTask2Id = taskManager.addSubTask(subTask2);

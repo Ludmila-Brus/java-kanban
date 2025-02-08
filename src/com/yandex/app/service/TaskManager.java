@@ -5,6 +5,7 @@ import com.yandex.app.model.SubTask;
 import com.yandex.app.model.Task;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public interface TaskManager {
     int addTask(Task task);
@@ -49,4 +50,8 @@ public interface TaskManager {
     void deleteAllEpics();
 
     ArrayList<Task> getHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
+
+    boolean isTwoTaskIntersect(Task task_1, Task task_2);
 }

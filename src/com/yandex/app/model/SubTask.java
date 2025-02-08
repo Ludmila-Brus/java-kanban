@@ -2,6 +2,7 @@ package com.yandex.app.model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class SubTask extends Task {
     private int epicId;
@@ -59,7 +60,8 @@ public class SubTask extends Task {
                 this.getDescription(),
                 Integer.valueOf(this.getEpicId()).toString(),
                 this.getDuration().toString(),
-                this.getStartTime().toString()
+                this.getStartTime().format(formatter),
+                this.getEndTime().format(formatter)
         );
     }
 }

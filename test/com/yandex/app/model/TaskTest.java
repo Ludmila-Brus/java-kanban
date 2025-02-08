@@ -4,6 +4,10 @@ import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
@@ -17,7 +21,7 @@ class TaskTest {
 
     @Test
     void shouldBeEqualsTask() {
-        Task task = new Task("NewTask", "NewTask description");
+        Task task = new Task("NewTask", "NewTask description", Duration.ofMinutes(90), LocalDateTime.now());
         final int taskId = taskManager.addTask(task);
         final Task savedTask = taskManager.getTask(taskId);
         assertNotNull(savedTask, "Задача не найдена.");

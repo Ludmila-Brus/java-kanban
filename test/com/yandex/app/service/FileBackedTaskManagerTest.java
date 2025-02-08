@@ -13,6 +13,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,16 +27,19 @@ class FileBackedTaskManagerTest {
 
     private FileBackedTaskManager fileBackedTaskManager;
 
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private final LocalDateTime dateTimeFirst = LocalDateTime.parse("22.01.2025 09:00", formatter);
+
     @Test
     void shouldBeSaveToFile() {
         try {
             File tmpFile = File.createTempFile("test", null);
             FileBackedTaskManager taskManager = new FileBackedTaskManager(tmpFile);
             //
-            Task task1 = new Task("Задача номер 1", "Вызвать мастера");
-            Task task2 = new Task("Задача номер 2", "Заехать на мойку");
-            Task task3 = new Task("Задача номер 3", "Зайти в магазин");
-            Task task4 = new Task("Задача номер 4", "Выбрать рюкзак");
+            Task task1 = new Task("Задача номер 1", "Вызвать мастера", Duration.ofMinutes(30), dateTimeFirst);
+            Task task2 = new Task("Задача номер 2", "Заехать на мойку", Duration.ofMinutes(60), dateTimeFirst.plusDays(1));
+            Task task3 = new Task("Задача номер 3", "Зайти в магазин", Duration.ofMinutes(90), dateTimeFirst.plusDays(2));
+            Task task4 = new Task("Задача номер 4", "Выбрать рюкзак", Duration.ofMinutes(130), dateTimeFirst.plusDays(3));
 
             final int task1Id = taskManager.addTask(task1);
             final int task2Id = taskManager.addTask(task2);
@@ -45,12 +51,12 @@ class FileBackedTaskManagerTest {
             Epic epic2 = new Epic("Эпик номер 2", "Пересадить отросток");
             final int epic2Id = taskManager.addEpic(epic2);
 
-            SubTask subTask1 = new SubTask("Подзадача номер 1","Помыть тарелки и чашки", epic1Id);
-            SubTask subTask2 = new SubTask("Подзадача номер 2", "Полить цветы", epic1Id);
-            SubTask subTask3 = new SubTask("Подзадача номер 3", "Подмести", epic1Id);
-            SubTask subTask4 = new SubTask("Подзадача номер 4","Выбрать горшок", epic2Id);
-            SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id);
-            SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id);
+            SubTask subTask1 = new SubTask("Подзадача номер 1","Помыть тарелки и чашки", epic1Id, Duration.ofMinutes(30), dateTimeFirst.plusDays(4));
+            SubTask subTask2 = new SubTask("Подзадача номер 2", "Полить цветы", epic1Id, Duration.ofMinutes(60), dateTimeFirst.plusDays(5));
+            SubTask subTask3 = new SubTask("Подзадача номер 3", "Подмести", epic1Id, Duration.ofMinutes(90), dateTimeFirst.plusDays(6));
+            SubTask subTask4 = new SubTask("Подзадача номер 4","Выбрать горшок", epic2Id, Duration.ofMinutes(130), dateTimeFirst.plusDays(7));
+            SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id, Duration.ofMinutes(160), dateTimeFirst.plusDays(8));
+            SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id, Duration.ofMinutes(190), dateTimeFirst.plusDays(9));
 
             final int subTask1Id = taskManager.addSubTask(subTask1);
             final int subTask2Id = taskManager.addSubTask(subTask2);
@@ -104,7 +110,7 @@ class FileBackedTaskManagerTest {
             final String[] lines = csvStr.split(System.lineSeparator());
             // то, что ожидаем - только заголовок + пустой список
             final ArrayList<String> expLines = new ArrayList<>();
-            expLines.add(0, "id,type,name,status,description,epic");
+            expLines.add(0, "id,type,name,status,description,epic,duration,startTime,endTime");
             // проверить
             assertLinesMatch(expLines, Arrays.asList(lines), "Содержимое файла - пусто, должно совпадать со списком задач - пусто");
 
@@ -140,7 +146,7 @@ class FileBackedTaskManagerTest {
             // проверить что получилось, сравнив ранее записанный в файл список
             // со списком задач, получившихся в результате загрузки
             final ArrayList<String> taskStr = new ArrayList<>();
-            taskStr.add("id,type,name,status,description,epic");
+            taskStr.add("id,type,name,status,description,epic,duration,startTime,endTime");
 
             ArrayList<Task> taskArrayList = taskManager.getTasks();
             for (Task task : taskArrayList) {
@@ -170,7 +176,7 @@ class FileBackedTaskManagerTest {
         try {
             File tmpFile = File.createTempFile("test", null);
              final ArrayList<String> expLines = new ArrayList<>();
-             expLines.add(0, "id,type,name,status,description,epic");
+             expLines.add(0, "id,type,name,status,description,epic,duration,startTime,endTime");
 
             // подготовить файл: записать в файл задачи - пустой список - полуичим пустой файл
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmpFile))) {
@@ -190,7 +196,7 @@ class FileBackedTaskManagerTest {
             // проверить что получилось, сравнив ранее записанный в файл список
             // со списком задач, получившихся в результате загрузки
             final ArrayList<String> taskStr = new ArrayList<>();
-            taskStr.add("id,type,name,status,description,epic");
+            taskStr.add("id,type,name,status,description,epic,duration,startTime,endTime");
 
             ArrayList<Task> taskArrayList = taskManager.getTasks();
             for (Task task : taskArrayList) {
@@ -217,18 +223,18 @@ class FileBackedTaskManagerTest {
 
     private static ArrayList<String> getStrings() {
         final ArrayList<String> expLines = new ArrayList<>();
-        expLines.add(0, "id,type,name,status,description,epic");
-        expLines.add(1, "1,TASK,Задача номер 1,IN_PROGRESS,Вызвать мастера");
-        expLines.add(2, "3,TASK,Задача номер 3,NEW,Зайти в магазин");
-        expLines.add(3, "4,TASK,Задача номер 4,NEW,Выбрать рюкзак");
-        expLines.add(4, "5,EPIC,Эпик номер 1,IN_PROGRESS,Еженедельная уборка квартиры");
-        expLines.add(5, "6,EPIC,Эпик номер 2,NEW,Пересадить отросток");
-        expLines.add(6, "7,SUBTASK,Подзадача номер 1,IN_PROGRESS,Помыть тарелки и чашки,5");
-        expLines.add(7, "8,SUBTASK,Подзадача номер 2,NEW,Полить цветы,5");
-        expLines.add(8, "9,SUBTASK,Подзадача номер 3,NEW,Подмести,5");
-        expLines.add(9, "10,SUBTASK,Подзадача номер 4,NEW,Выбрать горшок,6");
-        expLines.add(10, "11,SUBTASK,Подзадача номер 5,NEW,Купить грунт,6");
-        expLines.add(11, "12,SUBTASK,Подзадача номер 6,NEW,Посадить цвет,6");
+        expLines.add(0, "id,type,name,status,description,epic,duration,startTime,endTime");
+        expLines.add(1, "1,TASK,Задача номер 1,IN_PROGRESS,Вызвать мастера,null,PT30M,22.01.2025 09:00,22.01.2025 09:30");
+        expLines.add(2, "3,TASK,Задача номер 3,NEW,Зайти в магазин,null,PT1H30M,24.01.2025 09:00,24.01.2025 10:30");
+        expLines.add(3, "4,TASK,Задача номер 4,NEW,Выбрать рюкзак,null,PT2H10M,25.01.2025 09:00,25.01.2025 11:10");
+        expLines.add(4, "5,EPIC,Эпик номер 1,IN_PROGRESS,Еженедельная уборка квартиры,null,PT49H30M,26.01.2025 09:00,28.01.2025 10:30");
+        expLines.add(5, "6,EPIC,Эпик номер 2,NEW,Пересадить отросток,null,PT51H10M,29.01.2025 09:00,31.01.2025 12:10");
+        expLines.add(6, "7,SUBTASK,Подзадача номер 1,IN_PROGRESS,Помыть тарелки и чашки,5,PT30M,26.01.2025 09:00,26.01.2025 09:30");
+        expLines.add(7, "8,SUBTASK,Подзадача номер 2,NEW,Полить цветы,5,PT1H,27.01.2025 09:00,27.01.2025 10:00");
+        expLines.add(8, "9,SUBTASK,Подзадача номер 3,NEW,Подмести,5,PT1H30M,28.01.2025 09:00,28.01.2025 10:30");
+        expLines.add(9, "10,SUBTASK,Подзадача номер 4,NEW,Выбрать горшок,6,PT2H10M,29.01.2025 09:00,29.01.2025 11:10");
+        expLines.add(10, "11,SUBTASK,Подзадача номер 5,NEW,Купить грунт,6,PT2H40M,30.01.2025 09:00,30.01.2025 11:40");
+        expLines.add(11, "12,SUBTASK,Подзадача номер 6,NEW,Посадить цвет,6,PT3H10M,31.01.2025 09:00,31.01.2025 12:10");
         return expLines;
     }
 
