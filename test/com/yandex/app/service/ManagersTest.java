@@ -1,10 +1,6 @@
 package com.yandex.app.service;
-
 import com.yandex.app.model.Epic;
-import com.yandex.app.model.Task;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 

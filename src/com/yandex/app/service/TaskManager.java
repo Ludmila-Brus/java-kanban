@@ -4,6 +4,8 @@ import com.yandex.app.model.Epic;
 import com.yandex.app.model.SubTask;
 import com.yandex.app.model.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
@@ -53,5 +55,7 @@ public interface TaskManager {
 
     TreeSet<Task> getPrioritizedTasks();
 
-    boolean isTwoTaskIntersect(Task task_1, Task task_2);
+    void updateTaskStartTime(Task task, LocalDateTime startTime);
+
+    void updateTaskDuration(Task task, Duration duration);
 }

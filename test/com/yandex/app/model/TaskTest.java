@@ -2,7 +2,7 @@ package com.yandex.app.model;
 
 import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -12,10 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
 
-    // без static тест не работает
-    private static TaskManager taskManager;
-    @BeforeAll
-    public static void beforeAll() {
+    private TaskManager taskManager;
+    @BeforeEach
+    public void beforeEach() {
         taskManager = Managers.getDefault();
     }
 

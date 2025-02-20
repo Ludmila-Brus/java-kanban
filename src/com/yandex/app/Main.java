@@ -7,12 +7,9 @@ import com.yandex.app.model.Status;
 import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.TreeSet;
 
 public class Main {
 
@@ -54,6 +51,7 @@ public class Main {
         Task task2 = new Task("Задача номер 2", "Заехать на мойку", duration45Min, dateTimeNow.plusDays(2));
         Task task3 = new Task("Задача номер 3", "Зайти в магазин", duration45Min, dateTimeNow.plusDays(4));
         Task task4 = new Task("Задача номер 4", "Выбрать рюкзак", duration45Min, dateTimeNow.plusDays(6));
+        Task task104 = new Task("Задача номер 104", "Выбрать рюкзак 104", duration45Min, null);
 
         final int task1Id = taskManager.addTask(task1);
         final int task2Id = taskManager.addTask(task2);
@@ -71,6 +69,7 @@ public class Main {
         SubTask subTask4 = new SubTask("Подзадача номер 4", "Выбрать горшок", epic2Id, duration45Min, dateTimeNow.plusDays(7));
         SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id, duration45Min, dateTimeNow.plusDays(8));
         SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id, duration45Min, dateTimeNow.plusDays(9));
+        SubTask subTask106 = new SubTask("Подзадача номер 106", "Посадить цвет 106", epic2Id, duration45Min, null);
 
         final int subTask1Id = taskManager.addSubTask(subTask1);
         final int subTask2Id = taskManager.addSubTask(subTask2);
@@ -78,6 +77,10 @@ public class Main {
         final int subTask4Id = taskManager.addSubTask(subTask4);
         final int subTask5Id = taskManager.addSubTask(subTask5);
         final int subTask6Id = taskManager.addSubTask(subTask6);
+
+        taskManager.updateTaskStartTime(task1, dateTimeNow.plusDays(10));
+        taskManager.updateTaskStartTime(subTask1, dateTimeNow.plusDays(12));
+
         printTestDataByList(taskManager);
 
         System.out.println("Меняем статус задачи");

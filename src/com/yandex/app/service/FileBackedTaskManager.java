@@ -19,6 +19,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.fileBacked = fileBacked;
     }
 
+    public File getFileBacked() {
+        return this.fileBacked;
+    }
+
     public Task fromString(String value) {
 
         String[] paramTask = value.split(",");

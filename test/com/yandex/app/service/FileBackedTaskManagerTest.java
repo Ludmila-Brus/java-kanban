@@ -4,7 +4,6 @@ import com.yandex.app.model.Epic;
 import com.yandex.app.model.Status;
 import com.yandex.app.model.SubTask;
 import com.yandex.app.model.Task;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -12,29 +11,35 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
-
-    private FileBackedTaskManager fileBackedTaskManager;
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final LocalDateTime dateTimeFirst = LocalDateTime.parse("22.01.2025 09:00", formatter);
 
+    @Override
+    protected FileBackedTaskManager getTaskManager() {
+        try {
+            File tmpFile = File.createTempFile("test", null);
+            // удалить при завершении программы
+            tmpFile.deleteOnExit();
+            return new FileBackedTaskManager(tmpFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка создания tmp-файла для теста");
+        }
+    }
+
     @Test
     void shouldBeSaveToFile() {
         try {
-            File tmpFile = File.createTempFile("test", null);
-            FileBackedTaskManager taskManager = new FileBackedTaskManager(tmpFile);
+            File tmpFile = taskManager.getFileBacked();
             //
             Task task1 = new Task("Задача номер 1", "Вызвать мастера", Duration.ofMinutes(30), dateTimeFirst);
             Task task2 = new Task("Задача номер 2", "Заехать на мойку", Duration.ofMinutes(60), dateTimeFirst.plusDays(1));
@@ -51,10 +56,10 @@ class FileBackedTaskManagerTest {
             Epic epic2 = new Epic("Эпик номер 2", "Пересадить отросток");
             final int epic2Id = taskManager.addEpic(epic2);
 
-            SubTask subTask1 = new SubTask("Подзадача номер 1","Помыть тарелки и чашки", epic1Id, Duration.ofMinutes(30), dateTimeFirst.plusDays(4));
+            SubTask subTask1 = new SubTask("Подзадача номер 1", "Помыть тарелки и чашки", epic1Id, Duration.ofMinutes(30), dateTimeFirst.plusDays(4));
             SubTask subTask2 = new SubTask("Подзадача номер 2", "Полить цветы", epic1Id, Duration.ofMinutes(60), dateTimeFirst.plusDays(5));
             SubTask subTask3 = new SubTask("Подзадача номер 3", "Подмести", epic1Id, Duration.ofMinutes(90), dateTimeFirst.plusDays(6));
-            SubTask subTask4 = new SubTask("Подзадача номер 4","Выбрать горшок", epic2Id, Duration.ofMinutes(130), dateTimeFirst.plusDays(7));
+            SubTask subTask4 = new SubTask("Подзадача номер 4", "Выбрать горшок", epic2Id, Duration.ofMinutes(130), dateTimeFirst.plusDays(7));
             SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id, Duration.ofMinutes(160), dateTimeFirst.plusDays(8));
             SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id, Duration.ofMinutes(190), dateTimeFirst.plusDays(9));
 
@@ -86,9 +91,6 @@ class FileBackedTaskManagerTest {
             // проверить
             assertLinesMatch(expLines, Arrays.asList(lines), "Содержимое файла должно совпадать со списком задач");
 
-            // удалить при завершении программы
-            tmpFile.deleteOnExit();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,8 +99,8 @@ class FileBackedTaskManagerTest {
     @Test
     void shouldBeEmptyFileAfterSaveEmptyListToFile() {
         try {
-            File tmpFile = File.createTempFile("test", null);
-            FileBackedTaskManager taskManager = new FileBackedTaskManager(tmpFile);
+            File tmpFile = taskManager.getFileBacked();
+
             // хотя в списки пусты, для пущей надежности выполним контрольное удаление всего
             taskManager.deleteAllTasks();
             taskManager.deleteAllSubTasks();
@@ -114,9 +116,6 @@ class FileBackedTaskManagerTest {
             // проверить
             assertLinesMatch(expLines, Arrays.asList(lines), "Содержимое файла - пусто, должно совпадать со списком задач - пусто");
 
-            // удалить при завершении программы
-            tmpFile.deleteOnExit();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,101 +123,84 @@ class FileBackedTaskManagerTest {
 
     @Test
     void shouldBeLoadFromFile() {
-        try {
-            File tmpFile = File.createTempFile("test", null);
-            final ArrayList<String> expLines = getStrings();
+        File tmpFile = taskManager.getFileBacked();
+        final ArrayList<String> expLines = getStrings();
+        // записать в файл задачи
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmpFile))) {
 
-            // записать в файл задачи
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmpFile))) {
-
-                for (String expLine : expLines) {
-                    writer.write(expLine);
-                    writer.newLine();
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            for (String expLine : expLines) {
+                writer.write(expLine);
+                writer.newLine();
             }
-
-            // выполнить загрузку из файла
-            FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(tmpFile);
-
-            // проверить что получилось, сравнив ранее записанный в файл список
-            // со списком задач, получившихся в результате загрузки
-            final ArrayList<String> taskStr = new ArrayList<>();
-            taskStr.add("id,type,name,status,description,epic,duration,startTime,endTime");
-
-            ArrayList<Task> taskArrayList = taskManager.getTasks();
-            for (Task task : taskArrayList) {
-                taskStr.add(task.toString());
-            }
-            ArrayList<Epic> epicArrayList = taskManager.getEpics();
-            for (Epic epic : epicArrayList) {
-                taskStr.add(epic.toString());
-            }
-            ArrayList<SubTask> subTaskArrayList = taskManager.getSubTasks();
-            for (SubTask subTask : subTaskArrayList) {
-                taskStr.add(subTask.toString());
-            }
-
-            assertEquals(expLines, taskStr, "Список задач, эпиков, подзадач из файла должен совпадать со списком загруженных");
-
-            // удалить при завершении программы
-            tmpFile.deleteOnExit();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // выполнить загрузку из файла
+        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(tmpFile);
+
+        // проверить что получилось, сравнив ранее записанный в файл список
+        // со списком задач, получившихся в результате загрузки
+        final ArrayList<String> taskStr = new ArrayList<>();
+        taskStr.add("id,type,name,status,description,epic,duration,startTime,endTime");
+
+        ArrayList<Task> taskArrayList = taskManagerFromFile.getTasks();
+        for (Task task : taskArrayList) {
+            taskStr.add(task.toString());
+        }
+        ArrayList<Epic> epicArrayList = taskManagerFromFile.getEpics();
+        for (Epic epic : epicArrayList) {
+            taskStr.add(epic.toString());
+        }
+        ArrayList<SubTask> subTaskArrayList = taskManagerFromFile.getSubTasks();
+        for (SubTask subTask : subTaskArrayList) {
+            taskStr.add(subTask.toString());
+        }
+
+        assertEquals(expLines, taskStr, "Список задач, эпиков, подзадач из файла должен совпадать со списком загруженных");
     }
 
     @Test
     void shouldBeEmptyListAfterLoadFromEmptyFile() {
-        try {
-            File tmpFile = File.createTempFile("test", null);
-             final ArrayList<String> expLines = new ArrayList<>();
-             expLines.add(0, "id,type,name,status,description,epic,duration,startTime,endTime");
+        File tmpFile = taskManager.getFileBacked();
+        final ArrayList<String> expLines = new ArrayList<>();
+        expLines.add(0, "id,type,name,status,description,epic,duration,startTime,endTime");
 
-            // подготовить файл: записать в файл задачи - пустой список - полуичим пустой файл
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmpFile))) {
+        // подготовить файл: записать в файл задачи - пустой список - полуичим пустой файл
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmpFile))) {
 
-                for (String expLine : expLines) {
-                    writer.write(expLine);
-                    writer.newLine();
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            for (String expLine : expLines) {
+                writer.write(expLine);
+                writer.newLine();
             }
-
-            // выполнить загрузку из файла
-            FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(tmpFile);
-
-            // проверить что получилось, сравнив ранее записанный в файл список
-            // со списком задач, получившихся в результате загрузки
-            final ArrayList<String> taskStr = new ArrayList<>();
-            taskStr.add("id,type,name,status,description,epic,duration,startTime,endTime");
-
-            ArrayList<Task> taskArrayList = taskManager.getTasks();
-            for (Task task : taskArrayList) {
-                taskStr.add(task.toString());
-            }
-            ArrayList<Epic> epicArrayList = taskManager.getEpics();
-            for (Epic epic : epicArrayList) {
-                taskStr.add(epic.toString());
-            }
-            ArrayList<SubTask> subTaskArrayList = taskManager.getSubTasks();
-            for (SubTask subTask : subTaskArrayList) {
-                taskStr.add(subTask.toString());
-            }
-
-            assertEquals(expLines, taskStr, "Пустой список задач, эпиков, подзадач из файла должен совпадать с пустым списком загруженных");
-
-            // удалить при завершении программы
-            tmpFile.deleteOnExit();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // выполнить загрузку из файла
+        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(tmpFile);
+
+        // проверить что получилось, сравнив ранее записанный в файл список
+        // со списком задач, получившихся в результате загрузки
+        final ArrayList<String> taskStr = new ArrayList<>();
+        taskStr.add("id,type,name,status,description,epic,duration,startTime,endTime");
+
+        ArrayList<Task> taskArrayList = taskManagerFromFile.getTasks();
+        for (Task task : taskArrayList) {
+            taskStr.add(task.toString());
+        }
+        ArrayList<Epic> epicArrayList = taskManagerFromFile.getEpics();
+        for (Epic epic : epicArrayList) {
+            taskStr.add(epic.toString());
+        }
+        ArrayList<SubTask> subTaskArrayList = taskManagerFromFile.getSubTasks();
+        for (SubTask subTask : subTaskArrayList) {
+            taskStr.add(subTask.toString());
+        }
+
+        assertEquals(expLines, taskStr, "Пустой список задач, эпиков, подзадач из файла должен совпадать с пустым списком загруженных");
     }
 
     private static ArrayList<String> getStrings() {

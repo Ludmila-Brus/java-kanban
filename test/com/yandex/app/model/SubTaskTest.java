@@ -20,7 +20,6 @@ class SubTaskTest {
 
     @Test
     void shouldBeEqualsSubTask() {
-        TaskManager taskManager = Managers.getDefault();
 
         Epic epic = new Epic("Убраться в квартире", "Навести порядок во всех комнатах и на кухне");
         int epicId = taskManager.addEpic(epic);
