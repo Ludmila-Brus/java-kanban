@@ -38,7 +38,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (isTaskIntersect(task)) {
             System.out.println("Нельзя добавить задачу с пересечением !");
             return 0;
-        };
+        }
         task.setId(nextId);
         nextId++;
         tasks.put(task.getId(), task);
@@ -100,7 +100,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (isTaskIntersect(subTask)) {
             System.out.println("Нельзя добавить задачу с пересечением !");
             return 0;
-        };
+        }
         // получить эпик
         int epicId = subTask.getEpicId();
         Epic epic = getEpic(epicId);
@@ -139,7 +139,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (isTaskIntersect(updateTask)) {
             System.out.println("Пересечение по интервалу выполнения задачи. Такая правка задачи не возможна ");
             return;
-        };
+        }
         tasksTree.remove(task);
         task.setStartTime(startTime);
         System.out.println(task);
@@ -154,7 +154,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (isTaskIntersect(updateTask)) {
             System.out.println("Пересечение по интервалу выполнения задачи. Такая правка задачи не возможна ");
             return;
-        };
+        }
         task.setDuration(duration);
         System.out.println(task);
     }
@@ -260,10 +260,10 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<SubTask> getSubTasksByEpic(int epicId) {
         ArrayList<SubTask> subTasksByEpic = new ArrayList<>();
         if (epics.containsKey(epicId)) {
-            List<SubTask> subTasksByEpic_ = epics.get(epicId).getSubTaskIds().stream()
+            List<SubTask> subTasksByEpicTmp = epics.get(epicId).getSubTaskIds().stream()
                     .map(subTasks::get)
                     .toList();
-            subTasksByEpic.addAll(subTasksByEpic_);
+            subTasksByEpic.addAll(subTasksByEpicTmp);
         }
         // если нет эпика или в нем нет подзадач вернуть пустой список
         return subTasksByEpic;
@@ -332,11 +332,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     //  проверка что задачи и подзадачи не пересекаются по времени выполнения
     //  во время создания или изменения задач и подзадач
-    public boolean isTwoTaskIntersect(Task task_1, Task task_2) {
-        return  (task_1.getStartTime().isBefore(task_2.getStartTime()) | task_1.getStartTime().isEqual(task_2.getStartTime())) &
-                (task_1.getEndTime().isAfter(task_2.getStartTime())) |
-                (task_2.getStartTime().isBefore(task_1.getStartTime()) | task_2.getStartTime().isEqual(task_1.getStartTime())) &
-                (task_2.getEndTime().isAfter(task_1.getStartTime()));
+    public boolean isTwoTaskIntersect(Task task1, Task task2) {
+        return  (task1.getStartTime().isBefore(task2.getStartTime()) | task1.getStartTime().isEqual(task2.getStartTime())) &
+                (task1.getEndTime().isAfter(task2.getStartTime())) |
+                (task2.getStartTime().isBefore(task1.getStartTime()) | task2.getStartTime().isEqual(task1.getStartTime())) &
+                (task2.getEndTime().isAfter(task1.getStartTime()));
     }
 
     public boolean isTaskIntersect(Task newTask) {

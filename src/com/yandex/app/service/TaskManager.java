@@ -3,6 +3,8 @@ package com.yandex.app.service;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.SubTask;
 import com.yandex.app.model.Task;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -55,4 +57,5 @@ public interface TaskManager {
 
     void updateTaskStartTime(Task task, LocalDateTime startTime);
 
+    void updateTaskDuration(Task task, Duration duration);
 }
