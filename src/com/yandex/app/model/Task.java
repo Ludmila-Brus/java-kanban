@@ -87,7 +87,7 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return Objects.isNull(this.startTime)?null:this.startTime.plus(this.duration);
+        return Objects.isNull(this.startTime) ? null : this.startTime.plus(this.duration);
     }
 
     @Override
@@ -120,9 +120,9 @@ public class Task {
                 this.getStatus().toString(),
                 this.getDescription(),
                 null,
-                Objects.isNull(this.getDuration())?null:this.getDuration().toString(),
-                Objects.isNull(this.getStartTime())?null:this.getStartTime().format(formatter),
-                Objects.isNull(this.getEndTime())?null:this.getEndTime().format(formatter)
+                Objects.isNull(this.getDuration()) ? null : this.getDuration().toString(),
+                Objects.isNull(this.getStartTime()) ? null : this.getStartTime().format(formatter),
+                Objects.isNull(this.getEndTime()) ? null : this.getEndTime().format(formatter)
         );
     }
 
