@@ -5,13 +5,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
+import static com.yandex.app.model.Task.FORMATTER;
+
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final File fileBacked;
 
     public FileBackedTaskManager(File fileBacked) {
@@ -33,7 +33,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Status status = Status.valueOf(paramTask[3]);
         String description = paramTask[4];
         Duration duration = Objects.equals(paramTask[6], "null") ? null : Duration.parse(paramTask[6]);
-        LocalDateTime dateTime = Objects.equals(paramTask[7],"null") ? null : LocalDateTime.parse((paramTask[7]),formatter);
+        LocalDateTime dateTime = Objects.equals(paramTask[7],"null") ? null : LocalDateTime.parse((paramTask[7]),FORMATTER);
 
         if (typeTask == TypeTask.TASK) {
             return new Task(id, title, description, status, duration, dateTime);
@@ -41,7 +41,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             int epicId = Integer.parseInt(paramTask[5]);
             return new SubTask(id, title, description, status, epicId, duration, dateTime);
         } else if (typeTask == TypeTask.EPIC) {
-            return new Epic(id, title, description, status, null, null, null);
+            return new Epic(id, title, description, null);
         }
         return null;
     }

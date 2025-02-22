@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Task {
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private int id;
     private String title;
@@ -121,8 +121,8 @@ public class Task {
                 this.getDescription(),
                 null,
                 Objects.isNull(this.getDuration()) ? null : this.getDuration().toString(),
-                Objects.isNull(this.getStartTime()) ? null : this.getStartTime().format(formatter),
-                Objects.isNull(this.getEndTime()) ? null : this.getEndTime().format(formatter)
+                Objects.isNull(this.getStartTime()) ? null : this.getStartTime().format(FORMATTER),
+                Objects.isNull(this.getEndTime()) ? null : this.getEndTime().format(FORMATTER)
         );
     }
 

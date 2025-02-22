@@ -20,8 +20,8 @@ public class Epic extends Task {
         super(title, description, duration, startTime);
     }
 
-    public Epic(int id, String title, String description, Status status, Duration duration, LocalDateTime startTime, ArrayList<Integer> subTaskIds) {
-        super(id, title, description, status, duration, startTime);
+    public Epic(int id, String title, String description, ArrayList<Integer> subTaskIds) {
+        super(id, title, description, null, null, null);
         if (subTaskIds != null) {
             this.subTaskIds = subTaskIds;
         }

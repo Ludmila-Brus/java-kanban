@@ -59,8 +59,8 @@ public class SubTask extends Task {
                 this.getDescription(),
                 Integer.valueOf(this.getEpicId()).toString(),
                 this.getDuration().toString(),
-                this.getStartTime().format(formatter),
-                this.getEndTime().format(formatter)
+                this.getStartTime().format(FORMATTER),
+                this.getEndTime().format(FORMATTER)
         );
     }
 }
