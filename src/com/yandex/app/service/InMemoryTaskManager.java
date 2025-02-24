@@ -79,7 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
         //LocalDateTime.now().minusDays(400);
         for (Integer subTaskId : epic.getSubTaskIds()) {
             SubTask subTask = subTasks.get(subTaskId);
-            if (subTask.getStartTime().isBefore( Objects.isNull(startTime) ? LocalDateTime.now().plusDays(400) : startTime)) {
+            if (subTask.getStartTime().isBefore(Objects.isNull(startTime) ? LocalDateTime.now().plusDays(400) : startTime)) {
                 startTime = subTask.getStartTime();
             }
             if (subTask.getEndTime().isAfter(Objects.isNull(endTime) ? LocalDateTime.now().minusDays(400) : endTime)) {
