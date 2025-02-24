@@ -4,7 +4,10 @@ import com.yandex.app.model.Epic;
 import com.yandex.app.model.SubTask;
 import com.yandex.app.model.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public interface TaskManager {
     int addTask(Task task);
@@ -49,4 +52,10 @@ public interface TaskManager {
     void deleteAllEpics();
 
     ArrayList<Task> getHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
+
+    void updateTaskStartTime(Task task, LocalDateTime startTime);
+
+    void updateTaskDuration(Task task, Duration duration);
 }

@@ -3,7 +3,12 @@ import com.yandex.app.model.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
+import static com.yandex.app.model.Task.FORMATTER;
+
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -12,6 +17,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public FileBackedTaskManager(File fileBacked) {
         super();
         this.fileBacked = fileBacked;
+    }
+
+    public File getFileBacked() {
+        return this.fileBacked;
     }
 
     public Task fromString(String value) {
@@ -23,12 +32,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String title = paramTask[2];
         Status status = Status.valueOf(paramTask[3]);
         String description = paramTask[4];
+        Duration duration = Objects.equals(paramTask[6], "null") ? null : Duration.parse(paramTask[6]);
+        LocalDateTime dateTime = Objects.equals(paramTask[7],"null") ? null : LocalDateTime.parse((paramTask[7]),FORMATTER);
 
         if (typeTask == TypeTask.TASK) {
-            return new Task(id, title, description, status);
+            return new Task(id, title, description, status, duration, dateTime);
         } else if (typeTask == TypeTask.SUBTASK) {
             int epicId = Integer.parseInt(paramTask[5]);
-            return new SubTask(id, title, description, status, epicId);
+            return new SubTask(id, title, description, status, epicId, duration, dateTime);
         } else if (typeTask == TypeTask.EPIC) {
             return new Epic(id, title, description, status, null);
         }
@@ -40,7 +51,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.fileBacked))) {
 
-                writer.write("id,type,name,status,description,epic");
+                writer.write("id,type,name,status,description,epic,duration,startTime,endTime");
                 writer.newLine();
 
                 ArrayList<Task> taskArrayList = super.getTasks();
@@ -216,28 +227,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             System.out.println("Файл успешно создан.");
             taskManager = new FileBackedTaskManager(fileBacked);
 
+            Duration duration45Min = Duration.ofMinutes(45);
+            LocalDateTime dateTimeNow = LocalDateTime.now();
             // добавить задачи, эпики, подзадачи
-            Task task1 = new Task("Задача номер 1", "Вызвать мастера");
-            Task task2 = new Task("Задача номер 2", "Заехать на мойку");
-            Task task3 = new Task("Задача номер 3", "Зайти в магазин");
-            Task task4 = new Task("Задача номер 4", "Выбрать рюкзак");
+            Task task1 = new Task("Задача номер 1", "Вызвать мастера", duration45Min, dateTimeNow);
+            Task task2 = new Task("Задача номер 2", "Заехать на мойку", duration45Min, dateTimeNow.plusDays(11));
+            Task task3 = new Task("Задача номер 3", "Зайти в магазин", duration45Min, dateTimeNow.plusDays(12));
+            Task task4 = new Task("Задача номер 4", "Выбрать рюкзак", duration45Min, dateTimeNow.plusDays(13));
 
             final int task1Id = taskManager.addTask(task1);
             final int task2Id = taskManager.addTask(task2);
             final int task3Id = taskManager.addTask(task3);
             final int task4Id = taskManager.addTask(task4);
 
-            Epic epic1 = new Epic("Эпик номер 1", "Навести порядок");
+            Epic epic1 = new Epic("Эпик номер 1", "Навести порядок", null, null);
             final int epic1Id = taskManager.addEpic(epic1);
-            Epic epic2 = new Epic("Эпик номер 2", "Пересадить отросток");
+            Epic epic2 = new Epic("Эпик номер 2", "Пересадить отросток", null, null);
             final int epic2Id = taskManager.addEpic(epic2);
 
-            SubTask subTask1 = new SubTask("Подзадача номер 1", "Помыть тарелки и чашки", epic1Id);
-            SubTask subTask2 = new SubTask("Подзадача номер 2", "Полить цветы", epic1Id);
-            SubTask subTask3 = new SubTask("Подзадача номер 3", "Подмести", epic1Id);
-            SubTask subTask4 = new SubTask("Подзадача номер 4", "Выбрать горшок", epic2Id);
-            SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id);
-            SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id);
+            SubTask subTask1 = new SubTask("Подзадача номер 1", "Помыть тарелки и чашки", epic1Id, duration45Min, dateTimeNow);
+            SubTask subTask2 = new SubTask("Подзадача номер 2", "Полить цветы", epic1Id, duration45Min, dateTimeNow.plusDays(1));
+            SubTask subTask3 = new SubTask("Подзадача номер 3", "Подмести", epic1Id, duration45Min, dateTimeNow.plusDays(2));
+            SubTask subTask4 = new SubTask("Подзадача номер 4", "Выбрать горшок", epic2Id, duration45Min, dateTimeNow.plusDays(3));
+            SubTask subTask5 = new SubTask("Подзадача номер 5", "Купить грунт", epic2Id, duration45Min, dateTimeNow.plusDays(4));
+            SubTask subTask6 = new SubTask("Подзадача номер 6", "Посадить цвет", epic2Id, duration45Min, dateTimeNow.plusDays(5));
 
             final int subTask1Id = taskManager.addSubTask(subTask1);
             final int subTask2Id = taskManager.addSubTask(subTask2);
