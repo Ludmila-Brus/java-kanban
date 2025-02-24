@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    private ArrayList<Integer> subTaskIds = new ArrayList<>();
-    LocalDateTime endTime;
+    private final ArrayList<Integer> subTaskIds = new ArrayList<>();
+    private LocalDateTime endTime;
 
     public Epic(String title, String description) {
 
@@ -20,10 +20,10 @@ public class Epic extends Task {
         super(title, description, duration, startTime);
     }
 
-    public Epic(int id, String title, String description, ArrayList<Integer> subTaskIds) {
-        super(id, title, description, null, null, null);
+    public Epic(int id, String title, String description, Status status, ArrayList<Integer> subTaskIds) {
+        super(id, title, description, status, null, null);
         if (subTaskIds != null) {
-            this.subTaskIds = subTaskIds;
+            this.subTaskIds.addAll(subTaskIds);
         }
     }
 
@@ -36,7 +36,7 @@ public class Epic extends Task {
     }
 
     public void setSubTaskIds(ArrayList<Integer> subTaskIds) {
-        this.subTaskIds = subTaskIds;
+        this.subTaskIds.addAll(subTaskIds);
     }
 
     public void addSubTaskIds(int subTaskId) {
@@ -44,13 +44,7 @@ public class Epic extends Task {
     }
 
     public String toStringAsModel() {
-        return "model.Epic{" +
-                "id=" + this.getId() +
-                ", title='" + this.getTitle() + '\'' +
-                ", description='" + this.getDescription() + '\'' +
-                ", status=" + this.getStatus() +
-                ", subTaskIds=" + this.getSubTaskIds() +
-                '}';
+        return STR."model.Epic{id=\{this.getId()}, title='\{this.getTitle()}', description='\{this.getDescription()}', status=\{this.getStatus()}, subTaskIds=\{this.getSubTaskIds()}, Duration=\{Objects.isNull(this.getDuration()) ? null : this.getDuration().toString()}, StartTime=\{Objects.isNull(this.getStartTime()) ? null : this.getStartTime().format(FORMATTER)}, EndTime=\{Objects.isNull(this.getEndTime()) ? null : this.getEndTime().format(FORMATTER)}}";
     }
 
     @Override

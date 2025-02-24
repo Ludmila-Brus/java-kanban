@@ -41,7 +41,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             int epicId = Integer.parseInt(paramTask[5]);
             return new SubTask(id, title, description, status, epicId, duration, dateTime);
         } else if (typeTask == TypeTask.EPIC) {
-            return new Epic(id, title, description, null);
+            return new Epic(id, title, description, status, null);
         }
         return null;
     }
@@ -231,9 +231,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             LocalDateTime dateTimeNow = LocalDateTime.now();
             // добавить задачи, эпики, подзадачи
             Task task1 = new Task("Задача номер 1", "Вызвать мастера", duration45Min, dateTimeNow);
-            Task task2 = new Task("Задача номер 2", "Заехать на мойку", duration45Min, dateTimeNow.plusDays(1));
-            Task task3 = new Task("Задача номер 3", "Зайти в магазин", duration45Min, dateTimeNow.plusDays(2));
-            Task task4 = new Task("Задача номер 4", "Выбрать рюкзак", duration45Min, dateTimeNow.plusDays(3));
+            Task task2 = new Task("Задача номер 2", "Заехать на мойку", duration45Min, dateTimeNow.plusDays(11));
+            Task task3 = new Task("Задача номер 3", "Зайти в магазин", duration45Min, dateTimeNow.plusDays(12));
+            Task task4 = new Task("Задача номер 4", "Выбрать рюкзак", duration45Min, dateTimeNow.plusDays(13));
 
             final int task1Id = taskManager.addTask(task1);
             final int task2Id = taskManager.addTask(task2);

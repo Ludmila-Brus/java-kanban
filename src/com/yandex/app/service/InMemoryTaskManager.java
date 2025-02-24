@@ -72,23 +72,26 @@ public class InMemoryTaskManager implements TaskManager {
 
     // определить время начала, продолжительность и время окончания эпика
     private void syncEpicDuration(Epic epic) {
-        // установить не реально большую дату начала
-        LocalDateTime startTime = LocalDateTime.now().plusDays(400);
-        // установить не реально маленькую дату окончания
-        LocalDateTime endTime = LocalDateTime.now().minusDays(400);;
+        LocalDateTime startTime = null;
+        //LocalDateTime.now().plusDays(400);
+        LocalDateTime endTime = null;
+        Duration duration = null;
+        //LocalDateTime.now().minusDays(400);
         for (Integer subTaskId : epic.getSubTaskIds()) {
             SubTask subTask = subTasks.get(subTaskId);
-            if (subTask.getStartTime().isBefore(startTime)) {
+            if (subTask.getStartTime().isBefore( Objects.isNull(startTime) ? LocalDateTime.now().plusDays(400) : startTime)) {
                 startTime = subTask.getStartTime();
             }
-            if (subTask.getEndTime().isAfter(endTime)) {
+            if (subTask.getEndTime().isAfter(Objects.isNull(endTime) ? LocalDateTime.now().minusDays(400) : endTime)) {
                 endTime = subTask.getEndTime();
             }
         }
         epic.setStartTime(startTime);
-        Duration duration = Duration.between(startTime, endTime);
+        if (!Objects.isNull(endTime) & !Objects.isNull(startTime)) {
+            duration = Duration.between(startTime, endTime);
+        }
         epic.setDuration(duration);
-        epic.setEndTime(startTime.plus(duration));
+        epic.setEndTime(endTime);
     }
 
     @Override
@@ -128,7 +131,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        tasks.put(task.getId(), task);
+        if (tasks.containsKey(task.getId())) {
+            tasks.put(task.getId(), task);
+        } else {
+            System.out.println("Такой задачи нет в списке");
+        }
     }
 
     @Override
@@ -144,6 +151,10 @@ public class InMemoryTaskManager implements TaskManager {
         task.setStartTime(startTime);
         System.out.println(task);
         tasksTree.add(task);
+
+        if (subTasks.containsKey(task.getId())) {
+            syncEpicDuration(epics.get(((SubTask) task).getEpicId()));
+        }
     }
 
     @Override
@@ -162,16 +173,28 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubTask(SubTask subTask) {
-        subTasks.put(subTask.getId(), subTask);
-        syncEpicStatus(epics.get(subTask.getEpicId()));
-        syncEpicDuration(epics.get(subTask.getEpicId()));
+        if (subTasks.containsKey(subTask.getId())) {
+            subTasks.put(subTask.getId(), subTask);
+            syncEpicStatus(epics.get(subTask.getEpicId()));
+            syncEpicDuration(epics.get(subTask.getEpicId()));
+        } else {
+            System.out.println("Такой подзадачи нет в списке");
+        }
     }
 
     @Override
     public void updateEpic(Epic epic) {
-        epics.put(epic.getId(), epic);
-        syncEpicStatus(epic);
-        syncEpicDuration(epic);
+        if (epics.containsKey(epic.getId())) {
+            // проверить, что подзадачи имеют класс SubTask
+            for (Integer subTaskIds: epic.getSubTaskIds()) {
+                if (!subTasks.containsKey(subTaskIds)) {
+                    throw new ManagerSaveException("Ошибка изменения эпика: потытка добавить в подзадачи объект другого класса с id ", subTaskIds.toString());
+                }
+            }
+            epics.put(epic.getId(), epic);
+        } else {
+            System.out.println("Такого эпика нет в списке");
+        }
     }
 
     @Override
@@ -327,7 +350,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public TreeSet<Task> getPrioritizedTasks() {
-        return tasksTree;
+        TreeSet<Task> tasksTreeNew = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+        tasksTreeNew.addAll(tasksTree);
+        return tasksTreeNew;
     }
 
     //  проверка что задачи и подзадачи не пересекаются по времени выполнения

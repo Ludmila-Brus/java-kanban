@@ -117,7 +117,7 @@ public class Task {
                 Integer.valueOf(this.getId()).toString(),
                 this.getTypeTask().toString(),
                 this.getTitle(),
-                this.getStatus().toString(),
+                Objects.isNull(this.getStatus()) ? null : this.getStatus().toString(),
                 this.getDescription(),
                 null,
                 Objects.isNull(this.getDuration()) ? null : this.getDuration().toString(),

@@ -24,7 +24,7 @@ public class Main {
         }
         System.out.println("Эпики:");
         for (Epic epic : taskManager.getEpics()) {
-            System.out.println(epic);
+            System.out.println(epic.toStringAsModel());
         }
         System.out.println("История:");
         for (Task task : taskManager.getHistory()) {
@@ -93,7 +93,6 @@ public class Main {
 
         System.out.println("Меняем описание эпика");
         epic1.setDescription("Еженедельная уборка квартиры");
-        taskManager.updateEpic(epic1);
         printTestDataByList(taskManager);
 
         System.out.println("Получить подзадачи эпика с id " + epic1.getId() + ", " + epic1.getTitle());
