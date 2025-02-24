@@ -44,7 +44,16 @@ public class Epic extends Task {
     }
 
     public String toStringAsModel() {
-        return STR."model.Epic{id=\{this.getId()}, title='\{this.getTitle()}', description='\{this.getDescription()}', status=\{this.getStatus()}, subTaskIds=\{this.getSubTaskIds()}, Duration=\{Objects.isNull(this.getDuration()) ? null : this.getDuration().toString()}, StartTime=\{Objects.isNull(this.getStartTime()) ? null : this.getStartTime().format(FORMATTER)}, EndTime=\{Objects.isNull(this.getEndTime()) ? null : this.getEndTime().format(FORMATTER)}}";
+        return "model.Epic{" +
+                "id= " + this.getId() +
+                ", title=" + this.getTitle() +
+                ", description=" + this.getDescription() +
+                ", status=" + this.getStatus() +
+                ", subTaskIds=" + this.getSubTaskIds() +
+                ", Duration=" + (Objects.isNull(this.getDuration()) ? null : this.getDuration().toString()) +
+                ", StartTime=" + (Objects.isNull(this.getStartTime()) ? null : this.getStartTime().format(FORMATTER)) +
+                ", EndTime=" + (Objects.isNull(this.getEndTime()) ? null : this.getEndTime().format(FORMATTER)) +
+                "}";
     }
 
     @Override

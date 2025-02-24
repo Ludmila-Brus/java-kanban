@@ -107,7 +107,7 @@ public class Task {
                 ", title='" + this.getTitle() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus() +
-                '}';
+                "}";
     }
 
     @Override
